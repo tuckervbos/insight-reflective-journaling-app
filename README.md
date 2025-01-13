@@ -25,7 +25,7 @@ A journaling application focusing on mental health, mood tracking, AI-driven sen
 
 Insight: Reflective Journaling is designed to help users track their daily thoughts, moods, and goals. Built with an emphasis on a smooth, wave-inspired UI/UX, it allows individuals to organize their reflections, visualize progress, and leverage AI sentiment analysis for deeper insights.
 
-Insight: Reflective Journaling aims to provide a calming, wave-like interface for tracking your daily reflections. It enables users to create journal entries, categorize them with tags, set goals, track milestones, and optionally leverage AI services for sentiment analysis. The fluid design and subtle animations support a tranquil, mindful experience.
+Insight: Reflective Journaling aims to provide a calming, fluid interface for tracking your daily reflections. It enables users to create journal entries, categorize them with tags, set goals, track milestones, and optionally leverage AI services for sentiment analysis. The fluid design and subtle animations support a tranquil, mindful experience.
 
 ## 2. Features
 
@@ -36,7 +36,7 @@ Insight: Reflective Journaling aims to provide a calming, wave-like interface fo
 - **AI Sentiment Analysis**: Integrate with IBM Watson or another NLP service.
 - Each journal entry automatically undergoes sentiment evaluation (e.g., “Positive,” “Negative,” etc.), powered by a secure server-side AI integration.
 - Results can be stored with your entry, allowing you to reflect on changes in mood or sentiment over time.
-- **Responsive & Fluid UI**: Inspired by wave motions using Framer Motion + Tailwind transitions.
+- **Responsive & Fluid UI**: Motions/animations using Framer Motion + Tailwind transitions.
 - **Weather & Moon Phase**: Store and display weather/moon data in each entry for historical reference.
 
 ## 3. Technologies Used
