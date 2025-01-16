@@ -23,7 +23,7 @@ A journaling application focusing on mental health, mood tracking, AI-driven sen
 
 ## 1. Introduction
 
-Insight: Reflective Journaling is designed to help users track their daily thoughts, moods, and goals. Built with an emphasis on a smooth, wave-inspired UI/UX, it allows individuals to organize their reflections, visualize progress, and leverage AI sentiment analysis for deeper insights.
+Insight: Reflective Journaling is designed to help users track their daily thoughts, moods, and goals. Built with an emphasis on a smooth, calming UI/UX, it allows individuals to organize their reflections, visualize progress, and leverage AI sentiment analysis for deeper insights.
 
 Insight: Reflective Journaling aims to provide a calming, fluid interface for tracking your daily reflections. It enables users to create journal entries, categorize them with tags, set goals, track milestones, and optionally leverage AI services for sentiment analysis. The fluid design and subtle animations support a tranquil, mindful experience.
 
@@ -47,7 +47,7 @@ Insight: Reflective Journaling aims to provide a calming, fluid interface for tr
 - **Tailwind CSS** for utility-first styling
 - **Framer Motion** for smooth animations
 - **Zustand** for lightweight state management
-- **p5.js** (optional, future) for generative or wave-like animations
+- **p5.js** (optional, future) for meditative / soothing animations
 
 ### Backend
 
@@ -128,7 +128,7 @@ Insight: Reflective Journaling aims to provide a calming, fluid interface for tr
 6. Explore Additional Insights (Optional):
    • If desired, you can incorporate charts or filters to group entries by sentiment, goals, or tags, offering deeper psychological or behavioral insights.
 
-7. Enjoy Fluid UI: Observe wave-like transitions and minimal design for a calming journaling experience.
+7. Enjoy Fluid UI: Observe smooth transitions and minimal design for a calming journaling experience.
 
 8. Track Weather/Moon: Let the server or client fetch weather/moon data and store them in each entry for historical tracking.
 
