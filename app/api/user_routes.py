@@ -1,25 +1,52 @@
-from flask import Blueprint, jsonify
-from flask_login import login_required
-from app.models import User
+from flask import Blueprint, jsonify, request
+from flask_login import login_required, current_user
+from app.models import User, db
 
 user_routes = Blueprint('users', __name__)
 
 
-@user_routes.route('/')
-@login_required
-def users():
+@user_routes.route('/', methods=['GET'])
+def get_users():
     """
-    Query for all users and returns them in a list of user dictionaries
+    Retrieve all users.
+    If no users are found, return a 404 status with an appropriate message.
     """
     users = User.query.all()
-    return {'users': [user.to_dict() for user in users]}
+    if not users:
+        return {"message": "No users found"}, 404
+    return {"users": [user.to_dict() for user in users]}, 200
 
 
-@user_routes.route('/<int:id>')
+@user_routes.route('/<int:id>', methods=['GET'])
 @login_required
-def user(id):
+def get_user_by_id(id):
     """
-    Query for a user by id and returns that user in a dictionary
+    Query for a user by ID and return their data as a dictionary.
     """
     user = User.query.get(id)
-    return user.to_dict()
+    if not user:
+        return {"message": "User not found"}, 404
+    return user.to_dict(), 200
+
+@user_routes.route('/<int:id>', methods=['PUT'])
+@login_required
+def update_user(id):
+    user = User.query.get_or_404(id)
+    # Authorization check to ensure current_user can only update their data
+    if user.id != current_user.id:
+        return {"message": "Unauthorized"}, 403
+    data = request.json
+    user.username = data.get("username", user.username)
+    user.email = data.get("email", user.email)
+    db.session.commit()
+    return user.to_dict(), 200
+
+@user_routes.route('/<int:id>', methods=['DELETE'])
+@login_required
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    if user.id != current_user.id:
+        return {"message": "Unauthorized"}, 403
+    db.session.delete(user)
+    db.session.commit()
+    return {"message": "User deleted successfully"}, 200
