@@ -1,23 +1,57 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
-import { Provider as ReduxProvider } from "react-redux";
-import { RouterProvider } from "react-router-dom";
-import configureStore from "./redux/store";
-import { router } from "./router";
-import * as sessionActions from "./redux/session";
+import { BrowserRouter } from "react-router-dom";
+import { ModalProvider } from "./context/Modal";
+import { getCsrfToken, authenticate } from "./utils/api";
+import useSessionStore from "./store/sessionStore"; // State management
+import App from "./App";
 import "./index.css";
 
-const store = configureStore();
+const Root = () => {
+	const setUser = useSessionStore((state) => state.setUser);
+	const [initialized, setInitialized] = useState(false);
+	const [authError, setAuthError] = useState(null);
 
-if (import.meta.env.MODE !== "production") {
-  window.store = store;
-  window.sessionActions = sessionActions;
-}
+	useEffect(() => {
+		const initializeApp = async () => {
+			try {
+				// Fetch CSRF token
+				await getCsrfToken();
+
+				// Attempt to authenticate user session
+				const user = await authenticate();
+				if (user) setUser(user); // Update session store
+			} catch (error) {
+				console.error("App initialization failed:", error);
+				setAuthError("Failed to initialize app. Please refresh and try again.");
+			} finally {
+				setInitialized(true);
+			}
+		};
+
+		initializeApp();
+	}, [setUser]);
+
+	if (!initialized) return <div className="loading-screen">Loading...</div>;
+	if (authError)
+		return (
+			<div className="error-screen">
+				<p>{authError}</p>
+				<button onClick={() => window.location.reload()}>Retry</button>
+			</div>
+		);
+
+	return (
+		<ModalProvider>
+			<BrowserRouter>
+				<App />
+			</BrowserRouter>
+		</ModalProvider>
+	);
+};
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <ReduxProvider store={store}>
-      <RouterProvider router={router} />
-    </ReduxProvider>
-  </React.StrictMode>
+	<React.StrictMode>
+		<Root />
+	</React.StrictMode>
 );
