@@ -16,20 +16,30 @@ from .config import Config
 
 login = LoginManager()
 login.login_view = 'auth.unauthorized'
+csrf = CSRFProtect()  # Instantiate CSRFProtect here
 
 def create_app():
     app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
     app.config.from_object(Config)
     # Enable CSRF protection for the app
     app.config['WTF_CSRF_ENABLED'] = True  
-    
+
     # Setup login manager
     login.init_app(app)
 
     @login.user_loader
-    def load_user(id):
-        return User.query.get(int(id))
-
+    def load_user(user_id):
+        print(f"Attempting to load user with ID: {user_id}")
+        try:
+            user = User.query.get(int(user_id))
+            if user:
+                print(f"User loaded successfully: {user}")
+            else:
+                print("No user found for this ID.")
+            return user
+        except Exception as e:
+            print(f"Error in load_user: {e}")
+            return None
 
     # Tell flask about our seed commands
     app.cli.add_command(seed_commands)
@@ -48,8 +58,8 @@ def create_app():
     Migrate(app, db)
 
     # Application Security
-    CORS(app)
-    CSRFProtect(app)
+    CORS(app, supports_credentials=True)
+    csrf.init_app(app)  # Apply CSRF middleware
 
 
     # Since we are deploying with Docker and Flask,
@@ -68,13 +78,14 @@ def create_app():
 
     @app.after_request
     def inject_csrf_token(response):
+        csrf_token = generate_csrf()
         response.set_cookie(
             'csrf_token',
-            generate_csrf(),
+            csrf_token,
             secure=True if os.environ.get('FLASK_ENV') == 'production' else False,
-            samesite='Strict' if os.environ.get(
-                'FLASK_ENV') == 'production' else None,
-            httponly=True)
+            samesite='Strict' if os.environ.get('FLASK_ENV') == 'production' else None,
+            httponly=True,
+        )
         return response
     
     @app.route("/api/docs")

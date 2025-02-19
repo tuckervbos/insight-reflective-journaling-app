@@ -1,8 +1,8 @@
-"""Update GoalStatus enum to use uppercase values
+"""migrate
 
-Revision ID: aed7ac4a29b1
-Revises: 0501141ec156
-Create Date: 2025-01-19 21:32:06.391407
+Revision ID: 3f095cd96a21
+Revises: 
+Create Date: 2025-02-19 17:33:58.780322
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'aed7ac4a29b1'
-down_revision = '0501141ec156'
+revision = '3f095cd96a21'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -52,7 +52,7 @@ def upgrade():
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=255), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('status', sa.Enum('IN_PROGRESS', 'COMPLETED', 'ON_HOLD', 'CANCELLED', name='goalstatus'), nullable=False),
+    sa.Column('status', sa.Enum('in_progress', 'completed', 'on_hold', 'cancelled', name='goalstatus'), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')

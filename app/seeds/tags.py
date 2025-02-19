@@ -2,6 +2,9 @@ from app.models import db, Tag, environment, SCHEMA
 from sqlalchemy.sql import text
 
 def seed_tags():
+    # Clear existing tags
+    db.session.query(Tag).delete()
+
     tags_data = [
         {"name": "Reflection"},
         {"name": "Exercise"},
