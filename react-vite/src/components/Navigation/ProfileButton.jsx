@@ -1,77 +1,85 @@
 import { useState, useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { FaUserCircle } from 'react-icons/fa';
-import { thunkLogout } from "../../redux/session";
-import OpenModalMenuItem from "./OpenModalMenuItem";
-import LoginFormModal from "../LoginFormModal";
-import SignupFormModal from "../SignupFormModal";
+import { FaUserCircle } from "react-icons/fa";
+import useSessionStore from "../../store/sessionStore";
+import { logout } from "../../utils/api";
+import { Link, useNavigate } from "react-router-dom";
 
 function ProfileButton() {
-  const dispatch = useDispatch();
-  const [showMenu, setShowMenu] = useState(false);
-  const user = useSelector((store) => store.session.user);
-  const ulRef = useRef();
+	const { user, setUser } = useSessionStore();
+	const [showMenu, setShowMenu] = useState(false);
+	const ulRef = useRef();
+	const navigate = useNavigate();
+	const [errorMessage, setErrorMessage] = useState(null);
 
-  const toggleMenu = (e) => {
-    e.stopPropagation(); // Keep from bubbling up to document and triggering closeMenu
-    setShowMenu(!showMenu);
-  };
+	const toggleMenu = (e) => {
+		e.stopPropagation();
+		setShowMenu((prev) => !prev);
+	};
 
-  useEffect(() => {
-    if (!showMenu) return;
+	useEffect(() => {
+		if (!showMenu) return;
 
-    const closeMenu = (e) => {
-      if (ulRef.current && !ulRef.current.contains(e.target)) {
-        setShowMenu(false);
-      }
-    };
+		const closeMenu = (e) => {
+			if (ulRef.current && !ulRef.current.contains(e.target)) {
+				setShowMenu(false);
+			}
+		};
 
-    document.addEventListener("click", closeMenu);
+		document.addEventListener("click", closeMenu);
+		return () => document.removeEventListener("click", closeMenu);
+	}, [showMenu]);
 
-    return () => document.removeEventListener("click", closeMenu);
-  }, [showMenu]);
+	const handleLogout = async () => {
+		try {
+			const errors = await logout(); // Call API to log out
+			if (errors && errors.message) {
+				setErrorMessage(errors.message || "Logout failed.");
+				console.error("Logout API returned errors:", errors);
+			} else {
+				console.log("Logout successful");
+				setUser(null); // Clear session store
+				setShowMenu(false); // Close dropdown
+				navigate("/"); // Redirect to landing page
+			}
+		} catch (error) {
+			setErrorMessage("An unexpected error occurred.");
+			console.error("Logout failed:", error);
+		}
+	};
 
-  const closeMenu = () => setShowMenu(false);
-
-  const logout = (e) => {
-    e.preventDefault();
-    dispatch(thunkLogout());
-    closeMenu();
-  };
-
-  return (
-    <>
-      <button onClick={toggleMenu}>
-        <FaUserCircle />
-      </button>
-      {showMenu && (
-        <ul className={"profile-dropdown"} ref={ulRef}>
-          {user ? (
-            <>
-              <li>{user.username}</li>
-              <li>{user.email}</li>
-              <li>
-                <button onClick={logout}>Log Out</button>
-              </li>
-            </>
-          ) : (
-            <>
-              <OpenModalMenuItem
-                itemText="Log In"
-                onItemClick={closeMenu}
-                modalComponent={<LoginFormModal />}
-              />
-              <OpenModalMenuItem
-                itemText="Sign Up"
-                onItemClick={closeMenu}
-                modalComponent={<SignupFormModal />}
-              />
-            </>
-          )}
-        </ul>
-      )}
-    </>
-  );
+	return (
+		<>
+			<button className="profile-icon" onClick={toggleMenu}>
+				<FaUserCircle />
+			</button>
+			{showMenu && (
+				<ul className="profile-dropdown" ref={ulRef}>
+					{user ? (
+						<>
+							<li>{user.username}</li>
+							<li>{user.email}</li>
+							<li>
+								<button onClick={handleLogout}>Log Out</button>
+							</li>
+						</>
+					) : (
+						<>
+							<li>
+								<Link to="/login" onClick={() => setShowMenu(false)}>
+									Log In
+								</Link>
+							</li>
+							<li>
+								<Link to="/signup" onClick={() => setShowMenu(false)}>
+									Sign Up
+								</Link>
+							</li>
+						</>
+					)}
+				</ul>
+			)}
+		</>
+	);
 }
 
 export default ProfileButton;

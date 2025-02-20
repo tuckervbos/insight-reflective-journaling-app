@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { login, authenticate } from "../../utils/api"; // Simplified imports
+import { login, authenticate } from "../../utils/api";
 import { Navigate, useNavigate } from "react-router-dom";
-import useSessionStore from "../../store/sessionStore"; // Manages global session state
+import useSessionStore from "../../store/sessionStore";
 
 function LoginFormPage() {
 	const navigate = useNavigate();
@@ -12,7 +12,7 @@ function LoginFormPage() {
 	const setUser = useSessionStore((state) => state.setUser);
 
 	// Redirect if already logged in
-	if (user) return <Navigate to="/" replace={true} />;
+	if (user) return <Navigate to="/home" replace={true} />;
 
 	// Handle form submission for login
 	const handleSubmit = async (e) => {
@@ -31,7 +31,7 @@ function LoginFormPage() {
 				setErrors({ server: "Login failed. Please try again." }); // Add server error
 			} else {
 				setUser(user); // Update global state
-				navigate("/"); // Redirect to homepage
+				navigate("/home"); // Redirect to homepage
 			}
 		}
 	};

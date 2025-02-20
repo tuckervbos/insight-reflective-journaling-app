@@ -2,7 +2,6 @@ import { useState } from "react";
 import useSessionStore from "../../store/sessionStore";
 import { signup } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
-// import { Navigate } from "react-router-dom";
 
 function SignupFormPage() {
 	const navigate = useNavigate();
@@ -19,18 +18,23 @@ function SignupFormPage() {
 			setErrors({ confirmPassword: "Passwords must match" });
 			return;
 		}
-		const response = await signup({ email, username, password });
-		if (response.errors) {
-			setErrors(response.errors);
-		} else {
-			setUser(response);
-			navigate("/");
+		try {
+			const response = await signup({ email, username, password });
+			if (response.errors) {
+				setErrors(response.errors);
+			} else {
+				setUser(response);
+				navigate("/home");
+			}
+		} catch (error) {
+			setErrors({ general: "Signup failed. Please try again." });
 		}
 	};
 
 	return (
 		<>
 			<h1>Sign Up</h1>
+			{errors.general && <p className="error">{errors.general}</p>}
 			<form onSubmit={handleSubmit}>
 				<label>
 					Email
@@ -41,6 +45,7 @@ function SignupFormPage() {
 						required
 					/>
 				</label>
+				{errors.email && <p className="error">{errors.email}</p>}
 				<label>
 					Username
 					<input
@@ -50,6 +55,7 @@ function SignupFormPage() {
 						required
 					/>
 				</label>
+				{errors.username && <p className="error">{errors.username}</p>}
 				<label>
 					Password
 					<input
@@ -68,6 +74,9 @@ function SignupFormPage() {
 						required
 					/>
 				</label>
+				{errors.confirmPassword && (
+					<p className="error">{errors.confirmPassword}</p>
+				)}
 				<button type="submit">Sign Up</button>
 			</form>
 		</>

@@ -73,10 +73,14 @@ export const login = async (credentials) => {
 // Perform user logout
 export const logout = async () => {
 	try {
+		if (!csrfToken) {
+			await getCsrfToken();
+		}
 		const response = await fetch("/api/auth/logout", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken, // Include CSRF token
 			},
 			credentials: "include", // Include cookies
 		});
@@ -128,5 +132,5 @@ export default {
 	authenticate,
 	login,
 	logout,
-	signup, // Include signup in the default export
+	signup,
 };
