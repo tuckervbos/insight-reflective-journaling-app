@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { ModalProvider } from "./context/Modal";
 import { getCsrfToken, authenticate } from "./utils/api";
-import useSessionStore from "./store/sessionStore"; // State management
+import useSessionStore from "./store/sessionStore"; // zustand store - state management
 import App from "./App";
 import "./index.css";
 
@@ -15,12 +15,12 @@ const Root = () => {
 	useEffect(() => {
 		const initializeApp = async () => {
 			try {
-				// Fetch CSRF token
+				// fetch CSRF token
 				await getCsrfToken();
 
-				// Attempt to authenticate user session
+				// attempt to authenticate user session
 				const user = await authenticate();
-				if (user) setUser(user); // Update session store
+				if (user) setUser(user); // update zustand store
 			} catch (error) {
 				console.error("App initialization failed:", error);
 				setAuthError("Failed to initialize app. Please refresh and try again.");
