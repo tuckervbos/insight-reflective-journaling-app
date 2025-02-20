@@ -51,7 +51,8 @@ def login():
 # Sign Up User
 @auth_routes.route('/signup', methods=['POST'])
 def sign_up():
-    form = SignUpForm()  # Flask-WTF will handle CSRF
+    # form = SignUpForm()  # Flask-WTF will handle CSRF
+    form = SignUpForm(csrf_token=request.cookies.get("csrf_token"))
     form.username.data = request.json.get('username')
     form.email.data = request.json.get('email')
     form.password.data = request.json.get('password')
