@@ -3,6 +3,7 @@ import { FaUserCircle } from "react-icons/fa";
 import useSessionStore from "../../store/sessionStore";
 import { logout } from "../../utils/api";
 import { Link, useNavigate } from "react-router-dom";
+import "./ProfileButton.css";
 
 function ProfileButton() {
 	const { user, setUser } = useSessionStore();
@@ -56,22 +57,53 @@ function ProfileButton() {
 				<ul className="profile-dropdown" ref={ulRef}>
 					{user ? (
 						<>
-							<li>{user.username}</li>
-							<li>{user.email}</li>
+							<li className="dropdown-user-info">{user.username}</li>
+							<li className="dropdown-user-info">{user.email}</li>
 							<li>
-								<button onClick={handleLogout}>Log Out</button>
+								<Link
+									to="/home"
+									className="dropdown-item"
+									onClick={() => setShowMenu(false)}
+								>
+									home
+								</Link>
+							</li>
+							<li>
+								<Link
+									to="/profile"
+									className="dropdown-item"
+									onClick={() => setShowMenu(false)}
+								>
+									profile
+								</Link>
+							</li>
+							<li>
+								<button
+									className="dropdown-item logout-btn"
+									onClick={handleLogout}
+								>
+									log out
+								</button>
 							</li>
 						</>
 					) : (
 						<>
 							<li>
-								<Link to="/login" onClick={() => setShowMenu(false)}>
-									Log In
+								<Link
+									to="/login"
+									className="dropdown-item"
+									onClick={() => setShowMenu(false)}
+								>
+									log in
 								</Link>
 							</li>
 							<li>
-								<Link to="/signup" onClick={() => setShowMenu(false)}>
-									Sign Up
+								<Link
+									to="/signup"
+									className="dropdown-item"
+									onClick={() => setShowMenu(false)}
+								>
+									sign up
 								</Link>
 							</li>
 						</>

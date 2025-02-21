@@ -1,5 +1,7 @@
 let csrfToken = null; // Global variable to store the CSRF token
 
+// ------------------------------ auth --------------------------------
+
 // Fetch the CSRF token from the backend
 export const getCsrfToken = async () => {
 	try {
@@ -12,7 +14,6 @@ export const getCsrfToken = async () => {
 		}
 		const data = await response.json();
 		csrfToken = data.csrf_token; // Store the CSRF token globally
-		console.log("CSRF token fetched successfully:", csrfToken);
 		document.cookie = `csrf_token=${csrfToken}; path=/`; // Optionally set it in cookies
 	} catch (error) {
 		console.error("Error fetching CSRF token:", error);
@@ -127,6 +128,8 @@ export const signup = async (userData) => {
 	}
 };
 
+// ------------------------------ entries --------------------------------
+
 export const fetchEntries = async () => {
 	try {
 		if (!csrfToken) await getCsrfToken(); // Ensure CSRF is set
@@ -147,7 +150,7 @@ export const fetchEntries = async () => {
 };
 
 // Create a new entry
-export const createEntry = async (entryData) => {
+export const createEntry = async (entryData, location) => {
 	try {
 		if (!csrfToken) await getCsrfToken();
 
@@ -158,7 +161,7 @@ export const createEntry = async (entryData) => {
 				"X-CSRF-TOKEN": csrfToken,
 			},
 			credentials: "include",
-			body: JSON.stringify(entryData),
+			body: JSON.stringify({ ...entryData, location }),
 		});
 		if (!response.ok) throw new Error("Failed to create entry.");
 		return await response.json();
@@ -210,6 +213,102 @@ export const deleteEntry = async (id) => {
 	}
 };
 
+// ------------------------------ users --------------------------------
+
+// Fetch user details by ID
+export const fetchUser = async (id) => {
+	try {
+		const response = await fetch(`/api/users/${id}`, {
+			method: "GET",
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to fetch user.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching user:", error);
+		throw error;
+	}
+};
+
+// Fetch authenticated user details
+export const fetchAuthenticatedUser = async () => {
+	try {
+		const response = await fetch("/api/auth/", {
+			method: "GET",
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to authenticate user.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching authenticated user:", error);
+		throw error;
+	}
+};
+
+// Update user details (email, username)
+export const updateUser = async (id, updatedData) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/users/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+			body: JSON.stringify(updatedData),
+		});
+		if (!response.ok) throw new Error("Failed to update user.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error updating user:", error);
+		throw error;
+	}
+};
+
+// Update password
+export const updatePassword = async (id, oldPassword, newPassword) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/users/${id}/password`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+			body: JSON.stringify({
+				old_password: oldPassword,
+				new_password: newPassword,
+			}),
+		});
+		if (!response.ok) throw new Error("Failed to update password.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error updating password:", error);
+		throw error;
+	}
+};
+
+// Delete user
+export const deleteUser = async (id) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/users/${id}`, {
+			method: "DELETE",
+			headers: {
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to delete user.");
+		return { success: true };
+	} catch (error) {
+		console.error("Error deleting user:", error);
+		throw error;
+	}
+};
+
 // Export all functions
 export default {
 	getCsrfToken,
@@ -221,4 +320,9 @@ export default {
 	createEntry,
 	updateEntry,
 	deleteEntry,
+	fetchUser,
+	updateUser,
+	updatePassword,
+	deleteUser,
+	fetchAuthenticatedUser,
 };

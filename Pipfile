@@ -27,6 +27,7 @@ wtforms = "==3.0.1"
 flask = "*"
 pytest = "*"
 pytest-flask = "*"
+requests = "*"
 
 [dev-packages]
 

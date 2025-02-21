@@ -6,8 +6,18 @@ import HomePage from "./components/HomePage/HomePage";
 import Navigation from "./components/Navigation/Navigation";
 import EntriesPage from "./components/EntriesPage/EntriesPage";
 import CreateEntryPage from "./components/CreateEntryPage/CreateEntryPage";
+import UserProfile from "./components/UserProfile/UserProfile";
+import ChangePassword from "./components/UserProfile/ChangePassword";
+import useSessionStore from "./store/sessionStore";
+import { useEffect } from "react";
 
 const App = () => {
+	const { user, authenticate } = useSessionStore();
+
+	useEffect(() => {
+		authenticate();
+	}, [authenticate]);
+
 	return (
 		<div>
 			<Navigation />
@@ -18,6 +28,15 @@ const App = () => {
 				<Route path="/home" element={<HomePage />} />
 				<Route path="/entries" element={<EntriesPage />} />
 				<Route path="/entries/new" element={<CreateEntryPage />} />
+				{user && (
+					<>
+						<Route path="/profile" element={<UserProfile userId={user.id} />} />
+						<Route
+							path="/change-password"
+							element={<ChangePassword userId={user.id} />}
+						/>
+					</>
+				)}
 			</Routes>
 		</div>
 	);

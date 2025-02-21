@@ -1,17 +1,25 @@
 import { create } from "zustand";
-import { authenticate, login, logout, signup } from "../utils/api";
+import {
+	authenticate,
+	login,
+	logout,
+	signup,
+	fetchAuthenticatedUser,
+} from "../utils/api";
 
 const useSessionStore = create((set) => ({
 	user: null,
+	loading: true,
+
 	// this function allows us to manually update user state
 	setUser: (user) => set({ user }),
 
 	authenticate: async () => {
 		try {
-			const user = await authenticate();
-			set({ user }); // set user if authenticated, or null otherwise
+			const user = await fetchAuthenticatedUser(); // Uses auth API
+			set({ user, loading: false });
 		} catch (error) {
-			console.error("Authentication error:", error);
+			set({ user: null, loading: false });
 		}
 	},
 

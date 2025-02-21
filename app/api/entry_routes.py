@@ -1,8 +1,31 @@
 from flask import Blueprint, request, jsonify, session
 from app.models import Entry, db
 from flask_login import login_required, current_user
+from datetime import datetime
+import requests
 
 entry_routes = Blueprint('entries', __name__)
+
+WEATHER_API_URL = "https://api.weatherapi.com/v1/current.json?key=149609775956c3c703692329fd6d8f03&q="
+MOON_API_URL = "https://api.farmsense.net/v1/moonphases/"
+
+def get_weather(location="auto:ip"):
+    """Fetch real-time weather data from the API"""
+    try:
+        response = requests.get(f"{WEATHER_API_URL}{location}")
+        data = response.json()
+        return data["current"]["condition"]["text"] if "current" in data else "Unknown"
+    except Exception:
+        return "Unknown"
+
+def get_moon_phase():
+    """Fetch moon phase data from API"""
+    try:
+        response = requests.get(MOON_API_URL)
+        data = response.json()
+        return data[0]["Phase"] if data else "Unknown"
+    except Exception:
+        return "Unknown"
 
 
 @entry_routes.route("/", methods=["GET"], strict_slashes=False)
@@ -35,12 +58,32 @@ def get_entry(id):
 @entry_routes.route('/', methods=['POST'])
 @login_required
 def create_entry():
-    """Create a new journal entry."""
+    """Create a new journal entry and store weather & moon phase"""
     data = request.json
-    entry = Entry(**data, user_id=current_user.id)
-    db.session.add(entry)
+    title = data.get("title", "").strip()
+    body = data.get("body", "").strip()
+    location = data.get("location", "auto:ip")  # Manual or auto location
+
+    if not title or not body:
+        return jsonify({"error": "Title and body are required."}), 400
+
+    weather = data.get("weather") or get_weather(location)  # Use provided or fetch new
+    moon_phase = get_moon_phase()
+
+    new_entry = Entry(
+        user_id=current_user.id,
+        title=title,
+        body=body,
+        weather=weather,
+        moon_phase=moon_phase,
+        sentiment=None,  # Placeholder for AI sentiment analysis
+        created_at=datetime.utcnow(),
+    )
+
+    db.session.add(new_entry)
     db.session.commit()
-    return jsonify(entry.to_dict()), 201
+
+    return jsonify(new_entry.to_dict()), 201
 
 @entry_routes.route('/<int:id>', methods=['PUT'])
 @login_required
@@ -64,3 +107,33 @@ def delete_entry(id):
     db.session.delete(entry)
     db.session.commit()
     return jsonify({'message': 'Entry deleted successfully'})
+
+
+# @entry_routes.route("/entries", methods=["POST"])
+# @login_required
+# def create_entry():
+#     """Create a new journal entry"""
+#     data = request.json
+#     title = data.get("title", "").strip()
+#     body = data.get("body", "").strip()
+
+#     if not title or not body:
+#         return jsonify({"error": "Title and body are required."}), 400
+
+#     weather = get_weather()  # Fetch weather data
+#     moon_phase = get_moon_phase()  # Fetch moon phase
+
+#     new_entry = Entry(
+#         user_id=current_user.id,
+#         title=title,
+#         body=body,
+#         weather=weather,
+#         moon_phase=moon_phase,
+#         sentiment=None,  # Placeholder for AI sentiment
+#         created_at=datetime.utcnow(),
+#     )
+
+#     db.session.add(new_entry)
+#     db.session.commit()
+    
+#     return jsonify(new_entry.to_dict()), 201

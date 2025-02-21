@@ -9,22 +9,8 @@ const EntriesPage = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const checkAuthAndFetchEntries = async () => {
-			try {
-				const user = await authenticate();
-				if (user) {
-					console.log("User authenticated:", user);
-					await fetchEntries();
-					console.log("Entries fetched successfully.");
-				} else {
-					console.error("User not authenticated.");
-				}
-			} catch (error) {
-				console.error("Error in authentication or fetching entries:", error);
-			}
-		};
-		checkAuthAndFetchEntries();
-	}, []);
+		fetchEntries();
+	}, [fetchEntries]);
 
 	return (
 		<div>
