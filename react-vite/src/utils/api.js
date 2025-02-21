@@ -127,10 +127,98 @@ export const signup = async (userData) => {
 	}
 };
 
+export const fetchEntries = async () => {
+	try {
+		if (!csrfToken) await getCsrfToken(); // Ensure CSRF is set
+		const response = await fetch("/api/entries", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include", // Include cookies
+		});
+		if (!response.ok) throw new Error("Failed to fetch entries.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching entries:", error);
+		throw error;
+	}
+};
+
+// Create a new entry
+export const createEntry = async (entryData) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+
+		const response = await fetch("/api/entries", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+			body: JSON.stringify(entryData),
+		});
+		if (!response.ok) throw new Error("Failed to create entry.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error creating entry:", error);
+		throw error;
+	}
+};
+
+// Update an entry
+export const updateEntry = async (id, updatedData) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+
+		const response = await fetch(`/api/entries/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+			body: JSON.stringify(updatedData),
+		});
+		if (!response.ok) throw new Error("Failed to update entry.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error updating entry:", error);
+		throw error;
+	}
+};
+
+// Delete an entry
+export const deleteEntry = async (id) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+
+		const response = await fetch(`/api/entries/${id}`, {
+			method: "DELETE",
+			headers: {
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to delete entry.");
+		return { success: true };
+	} catch (error) {
+		console.error("Error deleting entry:", error);
+		throw error;
+	}
+};
+
+// Export all functions
 export default {
 	getCsrfToken,
 	authenticate,
 	login,
 	logout,
 	signup,
+	fetchEntries,
+	createEntry,
+	updateEntry,
+	deleteEntry,
 };

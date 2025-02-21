@@ -1,15 +1,27 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from app.models import Entry, db
 from flask_login import login_required, current_user
 
 entry_routes = Blueprint('entries', __name__)
 
-@entry_routes.route('/', methods=['GET'])
+
+@entry_routes.route("/", methods=["GET"], strict_slashes=False)
 @login_required
 def get_entries():
-    """Retrieve all entries for the authenticated user."""
+    # Debugging logs to check session and authentication
+    print("\n---- Debugging /api/entries ----")
+    print(f"Session contents before fetching entries: {session}")
+    print(f"Is user authenticated? {current_user.is_authenticated}")
+
+    if not current_user.is_authenticated:
+        print("User is not authenticated. Returning 401.")
+        return jsonify({"error": "Unauthorized"}), 401  # Ensure correct response
+
+    # Fetch entries for the current user
     entries = Entry.query.filter_by(user_id=current_user.id).all()
-    return jsonify([entry.to_dict() for entry in entries])
+    print(f"Entries fetched: {len(entries)}")  # Print number of entries found
+
+    return jsonify([entry.to_dict() for entry in entries]), 200
 
 @entry_routes.route('/<int:id>', methods=['GET'])
 @login_required

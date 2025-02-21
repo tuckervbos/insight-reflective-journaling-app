@@ -12,40 +12,36 @@ def restore_csrf():
     csrf_token = generate_csrf()
     response = make_response({'csrf_token': csrf_token}, 200)
     response.set_cookie('csrf_token', csrf_token, httponly=False, path='/')
+    session['csrf_token'] = csrf_token 
     print(f"CSRF token in session: {session.get('csrf_token')}")
     print(f"CSRF token from request cookie: {request.cookies.get('csrf_token')}")
     return response
 
 @auth_routes.route("/", methods=["GET"])
 def get_authenticated_user():
-    print("Request headers:", request.headers)
-    print("Request cookies:", request.cookies)
     print("Session contents:", session)
-    print("Is user authenticated?", current_user.is_authenticated)  # Log the current_user object
     if not current_user.is_authenticated:
         print("No user authenticated.")
-        return {"error": "Unauthorized"}, 401
-    print(f"Authenticated user: {current_user.to_dict()}")  # Log the authenticated user
-    return current_user.to_dict()
+        return jsonify({"error": "Unauthorized"}), 401  # Return JSON instead of redirect
+    return jsonify(current_user.to_dict())
 
 # Login User
 @auth_routes.route('/login', methods=['POST'])
 def login():
+    """
+    Logs a user in
+    """
     form = LoginForm()
-    form.email.data = request.json.get('email')
-    form.password.data = request.json.get('password')
-
-    if not form.validate():
-        print("Form validation errors:", form.errors)  # Debugging logs
-        # Customize errors for clarity
-        if "email" in form.errors:
-            return jsonify({'errors': {'message': 'Invalid email or password'}}), 401
-        if "password" in form.errors:
-            return jsonify({'errors': {'message': 'Invalid email or password'}}), 401
-
-    user = User.query.filter_by(email=form.email.data).first()
-    login_user(user, fresh=True)
-    return jsonify(user.to_dict()), 200
+    # Get the csrf_token from the request cookie and put it into the
+    # form manually to validate_on_submit can be used
+    form['csrf_token'].data = request.cookies['csrf_token']
+    if form.validate_on_submit():
+        # Add the user to the session, we are logged in!
+        user = User.query.filter(User.email == form.data['email']).first()
+        login_user(user)
+       
+        return user.to_dict()
+    return form.errors, 401
 
 
 # Sign Up User
@@ -87,3 +83,8 @@ def change_password():
     current_user.hashed_password = generate_password_hash(data['new_password'])
     db.session.commit()
     return jsonify({"message": "Password changed successfully"}), 200
+
+# Unauthorized route
+@auth_routes.route("/unauthorized")
+def unauthorized():
+    return jsonify({"error": "Unauthorized access"}), 401  # JSON response instead of redirect
