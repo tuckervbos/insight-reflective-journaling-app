@@ -40,7 +40,7 @@ app.register_blueprint(milestone_routes, url_prefix="/api/milestones")
 
 # Initialize Database and Migrations
 db.init_app(app)
-migrate = Migrate(app, db)
+Migrate(app, db)
 
 # application security 
 CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
