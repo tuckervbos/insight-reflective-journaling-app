@@ -5,7 +5,7 @@ load_dotenv()
 
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY', "7d96fa5f80386e404ada1717220017c0")
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     WEATHER_API_KEY = os.environ.get('WEATHER_API_KEY')
     WEATHER_API_URL = os.environ.get('WEATHER_API_URL')
     MOON_API_URL = os.environ.get('MOON_API_URL')
