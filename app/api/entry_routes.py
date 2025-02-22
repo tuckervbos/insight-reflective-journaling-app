@@ -2,31 +2,69 @@ from flask import Blueprint, request, jsonify, session
 from app.models import Entry, db
 from flask_login import login_required, current_user
 from datetime import datetime
+from time import time
+import os
+from dotenv import load_dotenv
 import requests
 
 entry_routes = Blueprint('entries', __name__)
 
-WEATHER_API_URL = "https://api.weatherapi.com/v1/current.json?key=149609775956c3c703692329fd6d8f03&q="
-MOON_API_URL = "https://api.farmsense.net/v1/moonphases/"
+# WEATHER_API_KEY = os.environ.get("WEATHER_API_KEY")
+# WEATHER_API_URL = os.environ.get("WEATHER_API_URL")
+# MOON_API_URL = "https://api.farmsense.net/v1/moonphases/"
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+WEATHER_API_URL = os.getenv("WEATHER_API_URL")
+MOON_API_URL = os.getenv("MOON_API_URL")
 
-def get_weather(location="auto:ip"):
-    """Fetch real-time weather data from the API"""
+print(f"Loaded WEATHER_API_KEY: {WEATHER_API_KEY}")  # Debugging
+print(f"Loaded WEATHER_API_URL: {WEATHER_API_URL}")  # Debugging
+
+
+@entry_routes.route("/weather", methods=["GET"])
+def get_weather():
+    """Fetch real-time weather data based on city or coordinates"""
+    api_key = WEATHER_API_KEY
+    city = request.args.get("city")
+    lat = request.args.get("lat")
+    lon = request.args.get("lon")
+
+    if not api_key:
+        return jsonify({"error": "Weather API Key Missing"}), 500
+
+    if city:
+        url = f"{WEATHER_API_URL}?q={city}&appid={api_key}&units=imperial"
+    elif lat and lon:
+        url = f"{WEATHER_API_URL}?lat={lat}&lon={lon}&appid={api_key}&units=imperial"
+    else:
+        return jsonify({"error": "Location required"}), 400
+
     try:
-        response = requests.get(f"{WEATHER_API_URL}{location}")
-        data = response.json()
-        return data["current"]["condition"]["text"] if "current" in data else "Unknown"
-    except Exception:
-        return "Unknown"
-
+        response = requests.get(url)
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to fetch weather"}), response.status_code
+        return jsonify(response.json())
+    except Exception as e:
+        print(f"Error fetching weather: {e}")
+        return jsonify({"error": "Weather service unavailable"}), 500
+    
+@entry_routes.route("/moon-phase", methods=["GET"])
 def get_moon_phase():
-    """Fetch moon phase data from API"""
+    """Fetch moon phase data from API using correct date format"""
     try:
-        response = requests.get(MOON_API_URL)
+        unix_timestamp = int(time())  # Generate current Unix timestamp
+        api_url = f"{MOON_API_URL}{unix_timestamp}"  # Append timestamp to API URL
+        response = requests.get(api_url)
         data = response.json()
-        return data[0]["Phase"] if data else "Unknown"
-    except Exception:
-        return "Unknown"
+        print(f"Moon phase API response: {data}")  # Debugging log
 
+        if data and isinstance(data, list) and "Phase" in data[0]:
+            phase = data[0].get("Phase", "").strip()
+            return jsonify({"phase": phase if phase else "Unknown"})  # Avoid empty responses
+
+        return jsonify({"phase": "Unknown"})
+    except Exception as e:
+        print(f"Error fetching moon phase: {e}")
+        return jsonify({"phase": "Unknown"}), 500
 
 @entry_routes.route("/", methods=["GET"], strict_slashes=False)
 @login_required
