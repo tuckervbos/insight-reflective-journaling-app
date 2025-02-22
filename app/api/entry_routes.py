@@ -9,9 +9,6 @@ import requests
 
 entry_routes = Blueprint('entries', __name__)
 
-# WEATHER_API_KEY = os.environ.get("WEATHER_API_KEY")
-# WEATHER_API_URL = os.environ.get("WEATHER_API_URL")
-# MOON_API_URL = "https://api.farmsense.net/v1/moonphases/"
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 WEATHER_API_URL = os.getenv("WEATHER_API_URL")
 MOON_API_URL = os.getenv("MOON_API_URL")
