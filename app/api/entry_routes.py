@@ -7,8 +7,7 @@ import os
 from dotenv import load_dotenv
 import requests
 
-entry_routes = Blueprint('entries', __name__)
-
+load_dotenv()
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 WEATHER_API_URL = os.getenv("WEATHER_API_URL")
 MOON_API_URL = os.getenv("MOON_API_URL")
@@ -16,6 +15,7 @@ MOON_API_URL = os.getenv("MOON_API_URL")
 print(f"Loaded WEATHER_API_KEY: {WEATHER_API_KEY}")  # Debugging
 print(f"Loaded WEATHER_API_URL: {WEATHER_API_URL}")  # Debugging
 
+entry_routes = Blueprint('entries', __name__)
 
 @entry_routes.route("/weather", methods=["GET"])
 def get_weather():
