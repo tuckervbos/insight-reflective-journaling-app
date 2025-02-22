@@ -1,11 +1,5 @@
 import { create } from "zustand";
-import {
-	authenticate,
-	login,
-	logout,
-	signup,
-	fetchAuthenticatedUser,
-} from "../utils/api";
+import { login, logout, signup, fetchAuthenticatedUser } from "../utils/api";
 
 const useSessionStore = create((set) => ({
 	user: null,

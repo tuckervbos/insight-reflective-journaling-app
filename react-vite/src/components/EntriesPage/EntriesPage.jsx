@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useEntriesStore from "../../store/entriesStore";
-import { authenticate } from "../../utils/api";
+// import { authenticate } from "../../utils/api";
 
 const EntriesPage = () => {
-	const { entries, fetchEntries, createEntry, updateEntry, deleteEntry } =
-		useEntriesStore();
+	const { entries, fetchEntries, updateEntry, deleteEntry } = useEntriesStore();
 	const navigate = useNavigate();
 
 	useEffect(() => {
