@@ -1,8 +1,14 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    WEATHER_API_KEY = os.environ.get('WEATHER_API_KEY')
+    WEATHER_API_URL = os.environ.get('WEATHER_API_URL')
+    MOON_API_URL = os.environ.get('MOON_API_URL')
     FLASK_RUN_PORT = os.environ.get('FLASK_RUN_PORT')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # SQLAlchemy 1.4 no longer supports url strings that start with 'postgres'

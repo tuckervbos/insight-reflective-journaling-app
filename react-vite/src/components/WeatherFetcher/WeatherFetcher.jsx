@@ -1,9 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 
-const WEATHER_API_KEY = "149609775956c3c703692329fd6d8f03";
-const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather";
-const MOON_API_URL = "https://api.farmsense.net/v1/moonphases/?d=";
-
 const WeatherFetcher = ({ onWeatherFetched }) => {
 	const [location, setLocation] = useState("");
 	const [weather, setWeather] = useState(null);
@@ -11,13 +7,13 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 	const [loading, setLoading] = useState(false);
 	const [moonPhase, setMoonPhase] = useState(null);
 
-	// Function to fetch moon phase
+	// fetch moon phase from backend
 	const fetchMoonPhase = async () => {
 		try {
-			const today = Math.floor(Date.now() / 86400000); // Convert date to Julian day
-			const response = await fetch(`${MOON_API_URL}${today}`);
+			const response = await fetch("/api/entries/moon-phase");
+			if (!response.ok) throw new Error("Moon phase data unavailable.");
 			const data = await response.json();
-			setMoonPhase(data[0].Phase || "Unknown");
+			setMoonPhase(data.phase || "Unknown");
 		} catch (err) {
 			setMoonPhase("Unknown");
 			console.error("Failed to fetch moon phase:", err);
@@ -29,13 +25,13 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 		async (lat, lon) => {
 			try {
 				setLoading(true);
-				setError(null); // clear error before fetching
+				setError(null);
 				const response = await fetch(
-					`${WEATHER_API_URL}?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=imperial`
+					`/api/entries/weather?lat=${lat}&lon=${lon}`
 				);
+				if (!response.ok) throw new Error("Invalid response from weather API.");
 				const data = await response.json();
 				setWeather(data);
-				setError(null);
 				onWeatherFetched(`${data.name}, ${data.sys.country}`);
 			} catch (err) {
 				setError(
@@ -68,7 +64,6 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 
 	// Fetch weather by city name
 	const fetchWeatherByCity = async () => {
-		// Prevent empty API calls
 		if (!location.trim()) {
 			setError("Please enter a city or allow location access.");
 			return;
@@ -76,13 +71,10 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 		try {
 			setLoading(true);
 			setError(null);
-			const response = await fetch(
-				`${WEATHER_API_URL}?q=${location}&appid=${WEATHER_API_KEY}&units=imperial`
-			);
+			const response = await fetch(`/api/entries/weather?city=${location}`);
 			if (!response.ok) throw new Error("Invalid response from weather API.");
 			const data = await response.json();
 			setWeather(data);
-			setError(null);
 			onWeatherFetched(`${data.name}, ${data.sys.country}`);
 			fetchMoonPhase();
 		} catch (err) {
