@@ -25,13 +25,16 @@ RUN pip install psycopg2
 # copy the full application code
 COPY . .
 
+RUN chmod +x start.sh
+CMD ["./start.sh"]
+
 # run migrations and seed database
 
-RUN flask db init
-RUN flask db migrate 
-RUN flask db upgrade
-RUN flask seed all 
+# RUN flask db init
+# RUN flask db migrate 
+# RUN flask db upgrade
+# RUN flask seed all 
 
 
 # start the application
-CMD gunicorn app:app
+# CMD gunicorn app:app
