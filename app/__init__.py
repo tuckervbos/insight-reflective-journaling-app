@@ -14,7 +14,7 @@ from .api.milestone_routes import milestone_routes  # RESTORED
 from .seeds import seed_commands
 from .config import Config
 
-upgrade()
+
 # Initialize Flask App
 app = Flask(__name__, static_folder="../react-vite/dist", static_url_path="/")
 app.url_map.strict_slashes = False
