@@ -6,4 +6,3 @@ node_modules
 dev.db
 .gitignore
 
-/migrations/
