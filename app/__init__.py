@@ -8,9 +8,9 @@ from .models import db, User
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
 from .api.entry_routes import entry_routes
-from .api.goal_routes import goal_routes  # RESTORED
-from .api.tag_routes import tag_routes  # RESTORED
-from .api.milestone_routes import milestone_routes  # RESTORED
+from .api.goal_routes import goal_routes
+from .api.tag_routes import tag_routes 
+from .api.milestone_routes import milestone_routes  
 from .seeds import seed_commands
 from .config import Config
 
