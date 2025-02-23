@@ -24,6 +24,9 @@ RUN pip install psycopg2
 
 # copy the full application code
 COPY . .
+RUN ls -l /var/www
+RUN file /var/www/start.sh
+RUN chmod +x /var/www/start.sh
 
 RUN chmod +x start.sh
 CMD ["./start.sh"]
