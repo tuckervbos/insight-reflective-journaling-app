@@ -1,8 +1,8 @@
-"""reinit migrations
+"""migration bug
 
-Revision ID: d89a844b744c
+Revision ID: b94a870c8ef3
 Revises: 
-Create Date: 2025-02-22 21:16:45.378971
+Create Date: 2025-02-23 15:21:14.597478
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd89a844b744c'
+revision = 'b94a870c8ef3'
 down_revision = None
 branch_labels = None
 depends_on = None
