@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, session, redirect, jsonify
 from flask_cors import CORS
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_login import LoginManager, current_user
 from .models import db, User
@@ -14,7 +14,7 @@ from .api.milestone_routes import milestone_routes  # RESTORED
 from .seeds import seed_commands
 from .config import Config
 
-
+upgrade()
 # Initialize Flask App
 app = Flask(__name__, static_folder="../react-vite/dist", static_url_path="/")
 app.url_map.strict_slashes = False
