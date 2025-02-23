@@ -24,13 +24,12 @@ login.login_view = "auth.unauthorized"
 
 @login.user_loader
 def load_user(id):
-    print(f"🔄 Attempting to load user with ID: {id}")
     return User.query.get(int(id))
 
 # Register Seed Commands
 app.cli.add_command(seed_commands)
 
-# Register Blueprints (RESTORED EVERYTHING)
+# Register Blueprints
 app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix="/api/users")
 app.register_blueprint(auth_routes, url_prefix="/api/auth")
@@ -44,7 +43,7 @@ db.init_app(app)
 Migrate(app, db)
 
 # application security 
-CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
+CORS(app, supports_credentials=True)
 
 @app.before_request
 def https_redirect():
