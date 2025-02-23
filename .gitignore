@@ -8,5 +8,4 @@ __pycache__/
 .Pipfile.lock
 .dev.db
 
-
-# instance/
+/migrations/
