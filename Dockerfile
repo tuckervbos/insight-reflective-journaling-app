@@ -27,9 +27,10 @@ COPY . .
 
 # run migrations and seed database
 
-RUN flask db stamp head
-RUN flask db migrate || true  
+RUN flask db init || true
+RUN flask db migrate || true
 RUN flask db upgrade
+RUN flask seed all || true
 
 
 # start the application
