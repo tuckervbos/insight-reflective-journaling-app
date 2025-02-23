@@ -15,8 +15,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL').replace('postgres://', 'postgresql://')
     SQLALCHEMY_ECHO = True
-    WTF_CSRF_ENABLED = True
-    WTF_CSRF_CHECK_DEFAULT = True
-    SESSION_COOKIE_SECURE = False
-    SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = None
+    # WTF_CSRF_ENABLED = True
+    # WTF_CSRF_CHECK_DEFAULT = True
+    # SESSION_COOKIE_SECURE = False
+    # SESSION_COOKIE_HTTPONLY = True
+    # SESSION_COOKIE_SAMESITE = None
