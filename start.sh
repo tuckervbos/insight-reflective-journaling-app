@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # 1. run alembic migrations
 flask db upgrade
