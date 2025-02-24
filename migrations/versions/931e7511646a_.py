@@ -47,7 +47,7 @@ def upgrade():
     sa.Column('weather', sa.String(length=50), nullable=True),
     sa.Column('moon_phase', sa.String(length=50), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['flask_schema.users.id']),
     sa.PrimaryKeyConstraint('id'),
     schema='flask_schema'
     )
@@ -58,23 +58,23 @@ def upgrade():
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('status', sa.Enum('in_progress', 'completed', 'on_hold', 'cancelled', name='goalstatus'), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['flask_schema.users.id']),
     sa.PrimaryKeyConstraint('id'),
     schema='flask_schema'
     )
     op.create_table('entry_goals',
     sa.Column('entry_id', sa.Integer(), nullable=False),
     sa.Column('goal_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['entry_id'], ['entries.id'], ),
-    sa.ForeignKeyConstraint(['goal_id'], ['goals.id'], ),
+    sa.ForeignKeyConstraint(['entry_id'], ['flask_schema.entries.id'], ),
+    sa.ForeignKeyConstraint(['goal_id'], ['flask_schema.goals.id'], ),
     sa.PrimaryKeyConstraint('entry_id', 'goal_id'),
     schema='flask_schema'
     )
     op.create_table('entry_tags',
     sa.Column('entry_id', sa.Integer(), nullable=False),
     sa.Column('tag_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['entry_id'], ['entries.id'], ),
-    sa.ForeignKeyConstraint(['tag_id'], ['tags.id'], ),
+    sa.ForeignKeyConstraint(['entry_id'], ['flask_schema.entries.id'], ),
+    sa.ForeignKeyConstraint(['tag_id'], ['flask_schema.tags.id'], ),
     sa.PrimaryKeyConstraint('entry_id', 'tag_id'),
     schema='flask_schema'
     )
@@ -85,8 +85,8 @@ def upgrade():
     sa.Column('is_completed', sa.Boolean(), nullable=False),
     sa.Column('goal_id', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['goal_id'], ['goals.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['goal_id'], ['flask_schema.goals.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['flask_schema.users.id']),
     sa.PrimaryKeyConstraint('id'),
     schema='flask_schema'
     )
