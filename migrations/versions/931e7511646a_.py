@@ -25,7 +25,8 @@ def upgrade():
     sa.Column('color', sa.String(length=50), nullable=True),
     sa.Column('is_default', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('name')
+    sa.UniqueConstraint('name'),
+    schema='flask_schema'
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -34,7 +35,8 @@ def upgrade():
     sa.Column('hashed_password', sa.String(length=255), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
-    sa.UniqueConstraint('username')
+    sa.UniqueConstraint('username'),
+    schema='flask_schema'
     )
     op.create_table('entries',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -46,7 +48,8 @@ def upgrade():
     sa.Column('moon_phase', sa.String(length=50), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    schema='flask_schema'
     )
     op.create_table('goals',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -56,21 +59,24 @@ def upgrade():
     sa.Column('status', sa.Enum('in_progress', 'completed', 'on_hold', 'cancelled', name='goalstatus'), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    schema='flask_schema'
     )
     op.create_table('entry_goals',
     sa.Column('entry_id', sa.Integer(), nullable=False),
     sa.Column('goal_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['entry_id'], ['entries.id'], ),
     sa.ForeignKeyConstraint(['goal_id'], ['goals.id'], ),
-    sa.PrimaryKeyConstraint('entry_id', 'goal_id')
+    sa.PrimaryKeyConstraint('entry_id', 'goal_id'),
+    schema='flask_schema'
     )
     op.create_table('entry_tags',
     sa.Column('entry_id', sa.Integer(), nullable=False),
     sa.Column('tag_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['entry_id'], ['entries.id'], ),
     sa.ForeignKeyConstraint(['tag_id'], ['tags.id'], ),
-    sa.PrimaryKeyConstraint('entry_id', 'tag_id')
+    sa.PrimaryKeyConstraint('entry_id', 'tag_id'),
+    schema='flask_schema'
     )
     op.create_table('milestones',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -81,7 +87,8 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['goal_id'], ['goals.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    schema='flask_schema'
     )
     # ### end Alembic commands ###
 
