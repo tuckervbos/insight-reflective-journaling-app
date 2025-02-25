@@ -13,13 +13,10 @@ def restore_csrf():
     response = make_response({'csrf_token': csrf_token}, 200)
     response.set_cookie('csrf_token', csrf_token, httponly=False, path='/')
     session['csrf_token'] = csrf_token 
-    print(f"CSRF token in session: {session.get('csrf_token')}")
-    print(f"CSRF token from request cookie: {request.cookies.get('csrf_token')}")
     return response
 
 @auth_routes.route("/", methods=["GET"])
 def get_authenticated_user():
-    print("Session contents:", session)
     if not current_user.is_authenticated:
         print("No user authenticated.")
         return jsonify({"error": "Unauthorized"}), 401  # Return JSON instead of redirect

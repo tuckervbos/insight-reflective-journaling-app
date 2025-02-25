@@ -6,6 +6,11 @@ from logging.config import fileConfig
 from flask import current_app
 
 from alembic import context
+from sqlalchemy import text
+from sqlalchemy.engine import Engine
+
+import os
+SCHEMA = os.environ.get("SCHEMA")
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -88,10 +93,18 @@ def run_migrations_online():
     connectable = get_engine()
 
     with connectable.connect() as connection:
+    # Only create schema if using PostgreSQL
+        bind = connection.engine
+        db_url = str(bind.url)
+
+        if "postgresql" in db_url:
+            connection.execute(text(f"CREATE SCHEMA IF NOT EXISTS {SCHEMA};"))
+        else:
+            logger.info("Skipping schema creation: Not using PostgreSQL.")
+
         context.configure(
             connection=connection,
             target_metadata=get_metadata(),
-            process_revision_directives=process_revision_directives,
             **current_app.extensions['migrate'].configure_args
         )
 

@@ -19,15 +19,22 @@ def get_tag(id):
 @tag_routes.route('/', methods=['POST'])
 @login_required
 def create_tag():
-    if not current_app.config.get("TESTING"):
-        csrf_token = request.headers.get("X-CSRF-TOKEN")
-        if not csrf_token or csrf_token != request.cookies.get('csrf_token'):
-            return {'message': 'CSRF token missing or invalid'}, 400
-
+    """Create a tag with unique, case-insensitive names."""
     data = request.json
-    tag = Tag(**data)
+    tag_name = data.get('name', '').strip().lower()
+    
+    if not tag_name:
+        return jsonify({'error': 'Tag name cannot be empty.'}), 400
+    
+    existing_tag = Tag.query.filter_by(name=tag_name).first()
+    
+    if existing_tag:
+        return jsonify({'error': 'Tag with this name already exists.'}), 400
+    
+    tag = Tag(name=tag_name, color=data.get('color'), is_default=False)
     db.session.add(tag)
     db.session.commit()
+    
     return jsonify(tag.to_dict()), 201
 
 @tag_routes.route('/<int:id>', methods=['DELETE'])

@@ -7,26 +7,26 @@ export const getCsrfToken = async () => {
 	try {
 		const response = await fetch("/api/auth/csrf/restore", {
 			method: "GET",
-			credentials: "include", // Include cookies in the request
+			credentials: "include", // include cookies in request
 		});
 		if (!response.ok) {
 			throw new Error("Failed to fetch CSRF token.");
 		}
 		const data = await response.json();
-		csrfToken = data.csrf_token; // Store the CSRF token globally
-		document.cookie = `csrf_token=${csrfToken}; path=/`; // Optionally set it in cookies
+		csrfToken = data.csrf_token; // store the csrf token globally
+		document.cookie = `csrf_token=${csrfToken}; path=/`; // optionally set it in cookies
 	} catch (error) {
 		console.error("Error fetching CSRF token:", error);
 		throw error;
 	}
 };
 
-// Authenticate the user session
+// authenticate the user session
 export const authenticate = async () => {
 	try {
 		const response = await fetch("/api/auth/", {
 			method: "GET",
-			credentials: "include", // Include cookies
+			credentials: "include", // include cookies
 		});
 		if (response.status === 401) {
 			console.warn("No user authenticated.");
@@ -43,35 +43,35 @@ export const authenticate = async () => {
 	}
 };
 
-// Perform user login
+// perform user login
 export const login = async (credentials) => {
 	try {
-		// Ensure CSRF token is available
+		// ensure csrf token is available
 		if (!csrfToken) {
-			await getCsrfToken(); // Fetch it if not already set
+			await getCsrfToken(); // fetch it if not already set
 		}
 
 		const response = await fetch("/api/auth/login", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"X-CSRF-TOKEN": csrfToken, // Include CSRF token in headers
+				"X-CSRF-TOKEN": csrfToken, // include csrf token in headers
 			},
-			credentials: "include", // Include cookies
+			credentials: "include", // include cookies
 			body: JSON.stringify(credentials),
 		});
 		if (!response.ok) {
 			const errors = await response.json();
-			return errors; // Return errors if login fails
+			return errors;
 		}
-		return await response.json(); // Return user data on success
+		return await response.json(); // return user data on success
 	} catch (error) {
 		console.error("Error during login:", error);
 		return { server: "An error occurred. Please try again later." };
 	}
 };
 
-// Perform user logout
+// perform user logout
 export const logout = async () => {
 	try {
 		if (!csrfToken) {
@@ -81,45 +81,43 @@ export const logout = async () => {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"X-CSRF-TOKEN": csrfToken, // Include CSRF token
+				"X-CSRF-TOKEN": csrfToken, // include CSRF token
 			},
-			credentials: "include", // Include cookies
+			credentials: "include", // include cookies
 		});
 		if (!response.ok) {
 			throw new Error("Logout failed.");
 		}
-		return null; // Indicate success
+		return null; // indicate success
 	} catch (error) {
 		console.error("Logout error:", error);
-		return { message: error.message }; // Return errors
+		return { message: error.message };
 	}
 };
 
 // Sign up a new user
 export const signup = async (userData) => {
 	try {
-		// Ensure CSRF token is available
+		// ensure csrf token is available
 		if (!csrfToken) {
-			await getCsrfToken(); // Fetch it if not already set
+			await getCsrfToken(); // fetch it if not already set
 		}
 
 		const response = await fetch("/api/auth/signup", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"X-CSRF-TOKEN": csrfToken, // Include CSRF token in headers
+				"X-CSRF-TOKEN": csrfToken,
 			},
-			credentials: "include", // Include cookies
-			body: JSON.stringify(userData), // Send user data
+			credentials: "include", // include cookies
+			body: JSON.stringify(userData), // send user data
 		});
 
-		// Handle non-OK responses
 		if (!response.ok) {
 			const errors = await response.json();
-			return { errors }; // Return errors for form validation
+			return { errors };
 		}
 
-		// Return user data on successful signup
 		const user = await response.json();
 		return user;
 	} catch (error) {
@@ -132,14 +130,14 @@ export const signup = async (userData) => {
 
 export const fetchEntries = async () => {
 	try {
-		if (!csrfToken) await getCsrfToken(); // Ensure CSRF is set
+		if (!csrfToken) await getCsrfToken();
 		const response = await fetch("/api/entries", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
 				"X-CSRF-TOKEN": csrfToken,
 			},
-			credentials: "include", // Include cookies
+			credentials: "include",
 		});
 		if (!response.ok) throw new Error("Failed to fetch entries.");
 		return await response.json();
@@ -149,7 +147,7 @@ export const fetchEntries = async () => {
 	}
 };
 
-// Create a new entry
+// create a new entry
 export const createEntry = async (entryData, location) => {
 	try {
 		if (!csrfToken) await getCsrfToken();

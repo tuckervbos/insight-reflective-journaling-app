@@ -23,16 +23,27 @@ def get_milestone(id):
 @milestone_routes.route('/', methods=['POST'])
 @login_required
 def create_milestone():
-    """Create a new milestone."""
+    """Create a milestone, ensuring goal exists & preventing duplicate names."""
     data = request.json
+    existing_milestone = Milestone.query.filter_by(user_id=current_user.id, milestone_name=data["milestone_name"]).first()
+    
+    if existing_milestone:
+        return jsonify({"error": "Milestone with this name already exists."}), 400
+    
+    if data.get("goal_id") and not Goal.query.get(data["goal_id"]):
+        return jsonify({"error": "Goal not found."}), 404
+    
     milestone = Milestone(
         user_id=current_user.id,
-        milestone_name=data['milestone_name'],
-        is_completed=data.get('is_completed', False),
-        goal_id=data.get('goal_id')  # Can be None
+        milestone_name=data["milestone_name"],
+        is_completed=False,
+        goal_id=data.get("goal_id"),
+        created_at=datetime.utcnow()
     )
+    
     db.session.add(milestone)
     db.session.commit()
+    
     return jsonify(milestone.to_dict()), 201
 
 

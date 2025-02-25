@@ -92,7 +92,3 @@ def react_root(path):
 def not_found(e):
     return app.send_static_file('index.html')
 
-# # ✅ Custom Unauthorized Response
-# @app.errorhandler(401)
-# def unauthorized(error):
-#     return jsonify({"error": "Unauthorized"}), 401

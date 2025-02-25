@@ -10,39 +10,60 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 	// fetch moon phase from backend
 	const fetchMoonPhase = async () => {
 		try {
+			if (moonPhase) return;
 			const response = await fetch("/api/entries/moon-phase");
 			if (!response.ok) throw new Error("Moon phase data unavailable.");
 			const data = await response.json();
-			setMoonPhase(data.phase || "Unknown");
+			console.log("🌙 Moon Phase API Response:", data); // ✅ Debugging log
+			const phase = data.phase || "Unknown"; // Ensure a valid fallback
+			setMoonPhase(phase); // Update state before returning
+
+			return phase;
 		} catch (err) {
 			setMoonPhase("Unknown");
 			console.error("Failed to fetch moon phase:", err);
+			return "Unknown";
 		}
 	};
 
 	// Function to fetch weather using coordinates
-	const fetchWeatherByCoords = useCallback(
-		async (lat, lon) => {
-			try {
-				setLoading(true);
-				setError(null);
-				const response = await fetch(
-					`/api/entries/weather?lat=${lat}&lon=${lon}`
-				);
-				if (!response.ok) throw new Error("Invalid response from weather API.");
-				const data = await response.json();
-				setWeather(data);
-				onWeatherFetched(`${data.name}, ${data.sys.country}`);
-			} catch (err) {
-				setError(
-					"Failed to fetch weather data. Try entering your city manually."
-				);
-			} finally {
-				setLoading(false);
-			}
-		},
-		[onWeatherFetched]
-	);
+	const fetchWeatherByCoords = useCallback(async (lat, lon) => {
+		try {
+			setLoading(true);
+			setError(null);
+			const response = await fetch(
+				`/api/entries/weather?lat=${lat}&lon=${lon}`
+			);
+			if (!response.ok) throw new Error("Invalid response from weather API.");
+
+			const data = await response.json();
+			console.log("Weather API Response:", data); // Debugging log
+
+			const moonPhaseData = await fetchMoonPhase();
+
+			const weatherDescription = data?.weather || "No description";
+			const temperature =
+				data?.temperature !== "N/A"
+					? `${data.temperature}°F`
+					: "No temperature data";
+			const city = data?.city || "Unknown City";
+			const country = data?.country || "Unknown Country";
+
+			setWeather({ weatherDescription, temperature, city, country });
+			console.log("Final Moon Phase Data:", moonPhaseData); // Debugging
+			onWeatherFetched(
+				{ weatherDescription, temperature, city, country },
+				moonPhaseData
+			);
+		} catch (err) {
+			setError(
+				"Failed to fetch weather data. Try entering your city manually."
+			);
+			console.error(err);
+		} finally {
+			setLoading(false);
+		}
+	}, []);
 
 	// Auto-detect location on component mount
 	useEffect(() => {
@@ -60,7 +81,7 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 		} else {
 			setError("Geolocation is not supported. Enter city manually.");
 		}
-	}, [fetchWeatherByCoords]);
+	}, []);
 
 	// Fetch weather by city name
 	const fetchWeatherByCity = async () => {
@@ -104,15 +125,23 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 			{weather && (
 				<div>
 					<h3>
-						weather in {weather.name}, {weather.sys.country}
+						Weather in{" "}
+						{weather?.city
+							? `${weather.city}, ${weather.country}`
+							: "Unknown Location"}
 					</h3>
 					<p>
-						{weather.weather[0].description}, {weather.main.temp}°F
+						{weather.weatherDescription},{" "}
+						{weather.temperature !== "N/A"
+							? `${weather.temperature}°F`
+							: "No temperature data"}
 					</p>
-					<img
-						src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-						alt="Weather Icon"
-					/>
+					{weather.weather && weather.weather[0] && weather.weather[0].icon && (
+						<img
+							src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+							alt="Weather Icon"
+						/>
+					)}
 					<h4>Moon Phase: {moonPhase || "Loading..."}</h4>
 				</div>
 			)}
