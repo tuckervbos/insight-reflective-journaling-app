@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import useSessionStore from "../../store/sessionStore";
 import { logout } from "../../utils/api";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./ProfileButton.css";
+import { GlowButton } from "../UIComponents";
 
 function ProfileButton() {
 	const { user, setUser } = useSessionStore();
@@ -50,9 +51,13 @@ function ProfileButton() {
 
 	return (
 		<>
-			<button className="profile-icon" onClick={toggleMenu}>
+			<GlowButton
+				className="profile-icon"
+				style={{ filter: "drop-shadow(0 0 8px rgba(255, 94, 77, 0.8))" }}
+				onClick={toggleMenu}
+			>
 				<FaUserCircle />
-			</button>
+			</GlowButton>
 			{showMenu && (
 				<ul className="profile-dropdown" ref={ulRef}>
 					{user ? (
@@ -60,51 +65,59 @@ function ProfileButton() {
 							<li className="dropdown-user-info">{user.username}</li>
 							<li className="dropdown-user-info">{user.email}</li>
 							<li>
-								<Link
-									to="/home"
+								<GlowButton
 									className="dropdown-item"
-									onClick={() => setShowMenu(false)}
+									onClick={() => {
+										navigate("/home");
+										setShowMenu(false);
+									}}
 								>
-									home
-								</Link>
+									Home
+								</GlowButton>
 							</li>
 							<li>
-								<Link
-									to="/profile"
+								<GlowButton
 									className="dropdown-item"
-									onClick={() => setShowMenu(false)}
+									onClick={() => {
+										navigate("/profile");
+										setShowMenu(false);
+									}}
 								>
-									profile
-								</Link>
+									Profile
+								</GlowButton>
 							</li>
 							<li>
-								<button
+								<GlowButton
 									className="dropdown-item logout-btn"
 									onClick={handleLogout}
 								>
-									log out
-								</button>
+									Log out
+								</GlowButton>
 							</li>
 						</>
 					) : (
 						<>
 							<li>
-								<Link
-									to="/login"
+								<GlowButton
 									className="dropdown-item"
-									onClick={() => setShowMenu(false)}
+									onClick={() => {
+										navigate("/login");
+										setShowMenu(false);
+									}}
 								>
-									log in
-								</Link>
+									Log in
+								</GlowButton>
 							</li>
 							<li>
-								<Link
-									to="/signup"
+								<GlowButton
 									className="dropdown-item"
-									onClick={() => setShowMenu(false)}
+									onClick={() => {
+										navigate("/signup");
+										setShowMenu(false);
+									}}
 								>
-									sign up
-								</Link>
+									Sign up
+								</GlowButton>
 							</li>
 						</>
 					)}

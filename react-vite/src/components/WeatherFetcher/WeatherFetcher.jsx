@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
+import { GlowButton } from "../UIComponents";
 
-const WeatherFetcher = ({ onWeatherFetched }) => {
+const WeatherFetcher = ({ onWeatherFetched = () => {} }) => {
 	const [location, setLocation] = useState("");
 	const [weather, setWeather] = useState(null);
 	const [error, setError] = useState(null);
@@ -50,6 +51,7 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 
 			setWeather({ weatherDescription, temperature, city, country });
 			console.log("Final Moon Phase Data:", moonPhaseData); // Debugging
+			setError(null);
 			onWeatherFetched(
 				{ weatherDescription, temperature, city, country },
 				moonPhaseData
@@ -95,6 +97,7 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 			if (!response.ok) throw new Error("Invalid response from weather API.");
 			const data = await response.json();
 			setWeather(data);
+			setError(null);
 			onWeatherFetched(`${data.name}, ${data.sys.country}`);
 			fetchMoonPhase();
 		} catch (err) {
@@ -107,7 +110,17 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 	};
 
 	return (
-		<div>
+		<div
+			className="weather-container"
+			style={{
+				backgroundColor: "black", // Set background to black
+				color: "white", // Text color stays white for contrast
+				padding: "1rem",
+				borderRadius: "8px",
+				boxShadow: "0 0 8px rgba(255, 94, 77, 0.5)", // Subtle red glow
+				border: "1px solid rgba(255, 94, 77, 0.6)", // Slight red border for definition
+			}}
+		>
 			{loading && <p>fetching weather data...</p>}
 			{error && <p style={{ color: "red" }}>{error}</p>}
 			{!weather && (
@@ -118,7 +131,7 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 						value={location}
 						onChange={(e) => setLocation(e.target.value)}
 					/>
-					<button onClick={fetchWeatherByCity}>get weather</button>
+					<GlowButton onClick={fetchWeatherByCity}>get weather</GlowButton>
 				</div>
 			)}
 			{weather && (
