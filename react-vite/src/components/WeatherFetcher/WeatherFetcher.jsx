@@ -44,7 +44,7 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 			const weatherDescription = data?.weather || "No description";
 			const temperature =
 				data?.temperature !== "N/A"
-					? `${data.temperature}°F`
+					? `${data.temperature}`
 					: "No temperature data";
 			const city = data?.city || "Unknown City";
 			const country = data?.country || "Unknown Country";
