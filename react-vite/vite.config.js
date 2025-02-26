@@ -13,6 +13,11 @@ export default defineConfig((mode) => ({
 			failOnError: mode === "production",
 		}),
 	],
+	resolve: {
+		alias: {
+			"@": "/src", // Ensures path aliasing works with or without TypeScript
+		},
+	},
 	server: {
 		open: true,
 		proxy: {

@@ -14,10 +14,9 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 			const response = await fetch("/api/entries/moon-phase");
 			if (!response.ok) throw new Error("Moon phase data unavailable.");
 			const data = await response.json();
-			console.log("🌙 Moon Phase API Response:", data); // ✅ Debugging log
-			const phase = data.phase || "Unknown"; // Ensure a valid fallback
-			setMoonPhase(phase); // Update state before returning
-
+			console.log("🌙 Moon Phase API Response:", data);
+			const phase = data.phase || "Unknown";
+			setMoonPhase(phase);
 			return phase;
 		} catch (err) {
 			setMoonPhase("Unknown");
@@ -26,7 +25,7 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 		}
 	};
 
-	// Function to fetch weather using coordinates
+	// function to fetch weather using coordinates
 	const fetchWeatherByCoords = useCallback(async (lat, lon) => {
 		try {
 			setLoading(true);
@@ -65,7 +64,7 @@ const WeatherFetcher = ({ onWeatherFetched }) => {
 		}
 	}, []);
 
-	// Auto-detect location on component mount
+	// auto-detect location on component mount
 	useEffect(() => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
