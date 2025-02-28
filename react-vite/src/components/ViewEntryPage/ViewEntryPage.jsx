@@ -51,7 +51,7 @@ const ViewEntryPage = () => {
 			animate="animate"
 			exit="exit"
 		>
-			<div className="container mx-auto py-12 px-6">
+			<div className="container mx-auto py-12 px-6 ">
 				<GlowCard className="p-6">
 					<h1 className="text-3xl font-semibold text-violet-300 mb-4">
 						{entry.title}
@@ -82,11 +82,25 @@ const ViewEntryPage = () => {
 					</div>
 
 					<div className="mt-6 flex justify-between">
-						<GlowButton onClick={() => navigate("/entries")}>
-							Back to Entries
-						</GlowButton>
 						<div className="flex space-x-4">
-							<GlowButton onClick={() => navigate(`/entries/${entryId}/edit`)}>
+							<GlowButton
+								onClick={() => navigate("/entries")}
+								className="bg-black"
+							>
+								Back to Entries
+							</GlowButton>
+							<GlowButton
+								onClick={() => navigate("/home")}
+								className="bg-black"
+							>
+								Back to Home
+							</GlowButton>
+						</div>
+						<div className="flex space-x-4">
+							<GlowButton
+								onClick={() => navigate(`/entries/${entryId}/edit`)}
+								className="bg-black"
+							>
 								Edit Entry
 							</GlowButton>
 							<GlowButton

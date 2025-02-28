@@ -17,14 +17,15 @@ const EditEntryPage = () => {
 	const navigate = useNavigate();
 	const { entries, updateEntry } = useEntriesStore();
 
-	// Find the existing entry
-	const existingEntry = entries.find((e) => e.id === parseInt(entryId));
+	// Find the existing entry safely
+	const existingEntry = entries.find((e) => e.id === parseInt(entryId, 10));
 
 	const [editedEntry, setEditedEntry] = useState({
 		title: existingEntry?.title || "",
 		body: existingEntry?.body || "",
 	});
 
+	// Prevents useEffect from running if existingEntry is undefined
 	useEffect(() => {
 		if (existingEntry) {
 			setEditedEntry({ title: existingEntry.title, body: existingEntry.body });
@@ -37,12 +38,20 @@ const EditEntryPage = () => {
 		setEditedEntry((prev) => ({ ...prev, [name]: value }));
 	};
 
-	// Save changes
-	const handleSave = () => {
+	// Save changes with validation
+	const handleSave = (e) => {
+		e.preventDefault(); // Prevent default form submission
+
+		if (!editedEntry.title.trim() || !editedEntry.body.trim()) {
+			alert("Both Title and Entry body are required.");
+			return;
+		}
+
 		updateEntry(entryId, editedEntry);
 		navigate("/entries"); // Redirect after saving
 	};
 
+	// Handle missing entry case
 	if (!existingEntry) {
 		return (
 			<div className="container mx-auto py-12 px-6">
@@ -70,36 +79,39 @@ const EditEntryPage = () => {
 				<h1 className="text-3xl font-semibold text-violet-300 mb-4">
 					Edit Entry
 				</h1>
+				<form onSubmit={handleSave}>
+					<div className="flex flex-col space-y-4">
+						<label className="text-violet-300">Title</label>
+						<input
+							type="text"
+							name="title"
+							required
+							value={editedEntry.title}
+							onChange={handleChange}
+							className="bg-background text-white border border-violet-500 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
+						/>
 
-				<div className="flex flex-col space-y-4">
-					<label className="text-violet-300">Title</label>
-					<input
-						type="text"
-						name="title"
-						value={editedEntry.title}
-						onChange={handleChange}
-						className="bg-background text-white border border-violet-500 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-					/>
+						<label className="text-violet-300">Entry</label>
+						<textarea
+							name="body"
+							value={editedEntry.body}
+							onChange={handleChange}
+							required
+							rows={6}
+							className="bg-background text-white border border-violet-500 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
+						/>
 
-					<label className="text-violet-300">Entry</label>
-					<textarea
-						name="body"
-						value={editedEntry.body}
-						onChange={handleChange}
-						rows={6}
-						className="bg-background text-white border border-violet-500 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-					/>
-
-					<div className="mt-4 flex justify-between">
-						<GlowButton onClick={handleSave}>Save Changes</GlowButton>
-						<GlowButton
-							onClick={() => navigate(`/entries/${entryId}`)}
-							className="bg-gray-600"
-						>
-							Cancel
-						</GlowButton>
+						<div className="mt-4 flex justify-between">
+							<GlowButton type="submit">Save Changes</GlowButton>
+							<GlowButton
+								onClick={() => navigate(`/entries/${entryId}`)}
+								className="bg-gray-600"
+							>
+								Cancel
+							</GlowButton>
+						</div>
 					</div>
-				</div>
+				</form>
 			</GlowCard>
 		</motion.div>
 	);

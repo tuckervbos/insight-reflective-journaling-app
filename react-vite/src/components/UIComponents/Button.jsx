@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 export const GlowButton = ({ children, onClick, className = "" }) => {
 	const glowVariants = {
 		initial: {
-			boxShadow: "0 0 0 1px rgba(138, 43, 226, 0.8)", // Violet glow
+			boxShadow: "0 0 0 1px rgba(138, 43, 226, 1)", // Violet glow
 		},
 		animate: {
 			boxShadow: [

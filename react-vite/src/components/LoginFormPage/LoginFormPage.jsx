@@ -2,8 +2,9 @@ import { useState } from "react";
 import { login, authenticate } from "../../utils/api";
 import { Navigate, useNavigate } from "react-router-dom";
 import useSessionStore from "../../store/sessionStore";
+import { GlowCard, GlowButton, GlowInput } from "../UIComponents";
 
-function LoginFormPage() {
+const LoginFormPage = () => {
 	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -14,59 +15,94 @@ function LoginFormPage() {
 	// Redirect if already logged in
 	if (user) return <Navigate to="/home" replace={true} />;
 
-	// Handle form submission for login
+	// Handle login
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		let validationErrors = {};
 
-		// Perform login
+		if (!email.trim()) {
+			validationErrors.email = "Email is required.";
+		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+			validationErrors.email = "Invalid email format.";
+		}
+
+		if (!password.trim()) {
+			validationErrors.password = "Password is required.";
+		} else if (password.length < 6) {
+			validationErrors.password = "Password must be at least 6 characters.";
+		}
+
+		if (Object.keys(validationErrors).length > 0) {
+			setErrors(validationErrors);
+			return;
+		}
+
 		const response = await login({ email, password });
 		if (response?.errors) {
-			console.error("Login failed:", response.errors);
-			setErrors(response.errors); // Display errors
+			setErrors(response.errors);
 		} else {
-			// Authenticate and update session
 			const user = await authenticate();
 			if (!user) {
-				console.warn("No user authenticated. Redirecting to login...");
-				setErrors({ server: "Login failed. Please try again." }); // Add server error
+				setErrors({ server: "Login failed. Please try again." });
 			} else {
-				setUser(user); // Update global state
-				navigate("/home"); // Redirect to homepage
+				setUser(user);
+				navigate("/home");
 			}
 		}
 	};
 
 	return (
-		<>
-			<h1>Log In</h1>
-			{errors.server && <p className="error">{errors.server}</p>}
-			<form onSubmit={handleSubmit}>
-				<label>
-					Email
-					<input
-						type="text"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						required
-					/>
-				</label>
-				<label>
-					Password
-					<input
-						type="password"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						required
-					/>
-				</label>
-				<button type="submit">Log In</button>
-				{errors.email && <p className="error">{errors.email.join(", ")}</p>}
-				{errors.password && (
-					<p className="error">{errors.password.join(", ")}</p>
+		<div className="flex items-center justify-center min-h-screen bg-black text-white">
+			<GlowCard className="w-full max-w-md p-6">
+				<h2 className="text-violet-400 text-2xl font-semibold mb-4 text-center">
+					Log In
+				</h2>
+				{errors.server && (
+					<p className="text-red-500 text-sm">{errors.server}</p>
 				)}
-			</form>
-		</>
+				<form onSubmit={handleSubmit} className="space-y-4">
+					<div>
+						<label className="block text-sm text-gray-400">Email</label>
+						<GlowInput
+							type="email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							className="w-full bg-black border border-violet-500 rounded-md px-3 py-2 text-white focus:ring-2 focus:ring-violet-600"
+							required
+						/>
+						{errors.email && (
+							<p className="text-red-500 text-xs">{errors.email}</p>
+						)}
+					</div>
+					<div>
+						<label className="block text-sm text-gray-400">Password</label>
+						<GlowInput
+							type="password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							className="w-full bg-black border border-violet-500 rounded-md px-3 py-2 text-white focus:ring-2 focus:ring-violet-600"
+							required
+						/>
+						{errors.password && (
+							<p className="text-red-500 text-xs">{errors.password}</p>
+						)}
+					</div>
+					<GlowButton type="submit" className="w-full">
+						Log In
+					</GlowButton>
+				</form>
+				<p className="text-sm text-gray-400 mt-4 text-center">
+					Don&apos;t have an account?{" "}
+					<span
+						className="text-violet-400 cursor-pointer"
+						onClick={() => navigate("/signup")}
+					>
+						Sign up here
+					</span>
+				</p>
+			</GlowCard>
+		</div>
 	);
-}
+};
 
 export default LoginFormPage;

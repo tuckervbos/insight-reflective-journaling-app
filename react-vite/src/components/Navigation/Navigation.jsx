@@ -2,23 +2,18 @@ import useSessionStore from "../../store/sessionStore";
 import { useNavigate, useLocation } from "react-router-dom";
 import ProfileButton from "./ProfileButton";
 import logo from "../../..//src/assets/logo-large-flat.png";
-// import "./Navigation.css";
-import { motion } from "motion/react";
-import { GlowButton } from "../UIComponents";
+import { motion } from "framer-motion";
 
 function Navigation() {
 	const user = useSessionStore((state) => state.user);
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const isLoginPage = location.pathname === "/login";
-	const isSignupPage = location.pathname === "/signup";
-
 	const glowVariants = {
 		initial: {
 			scale: 1,
 			filter: "drop-shadow(0 0 2px rgba(138, 43, 226, 0.5))",
-		}, // Purple glow
+		},
 		hover: {
 			scale: 1.1,
 			filter: "drop-shadow(0 0 8px rgba(138, 43, 226, 0.8))",
@@ -42,7 +37,7 @@ function Navigation() {
 
 				{/* ✅ Center - App Title */}
 				<motion.div
-					className="text-violet-400 text-4xl font-light cursor-pointer "
+					className="text-violet-400 text-4xl font-light cursor-pointer"
 					whileHover={{ scale: 1.05 }}
 					transition={{ duration: 0.2 }}
 					onClick={() => navigate(user ? "/home" : "/")}
@@ -50,36 +45,8 @@ function Navigation() {
 					<h2>insight</h2>
 				</motion.div>
 
-				{/* ✅ Right - Profile Button / Auth Buttons */}
-				<div className="flex items-center space-x-4">
-					{user ? (
-						<motion.div
-							whileHover={{ scale: 1.05 }}
-							transition={{ duration: 0.2 }}
-						>
-							<ProfileButton glowColor="rgba(138, 43, 226, 0.7)" />
-						</motion.div>
-					) : (
-						<>
-							{!isLoginPage && (
-								<GlowButton
-									onClick={() => navigate("/login")}
-									className="bg-violet-600"
-								>
-									Login
-								</GlowButton>
-							)}
-							{!isSignupPage && (
-								<GlowButton
-									onClick={() => navigate("/signup")}
-									className="bg-violet-600"
-								>
-									Sign Up
-								</GlowButton>
-							)}
-						</>
-					)}
-				</div>
+				{/* ✅ Right - Profile Dropdown */}
+				<ProfileButton glowColor="rgba(138, 43, 226, 0.7)" />
 			</div>
 		</nav>
 	);

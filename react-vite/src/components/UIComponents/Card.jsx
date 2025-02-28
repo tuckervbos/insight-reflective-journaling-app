@@ -21,7 +21,7 @@ export const GlowCard = ({ children, className = "" }) => {
 
 	return (
 		<motion.div
-			className="bg-background p-4 rounded-lg m-2"
+			className="bg-background p-6 rounded-lg m-2 shadow-lg shadow-violet-500/50"
 			variants={cardVariants}
 			initial="initial"
 			animate="animate"
