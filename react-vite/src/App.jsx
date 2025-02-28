@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import EditEntryPage from "./components/EditEntryPage/EditEntryPage";
 import ViewEntryPage from "./components/ViewEntryPage/ViewEntryPage";
 import { AnimatePresence } from "motion/react";
+import UpdateProfilePage from "./components/UpdateProfilePage/UpdateProfilePage";
 
 const App = () => {
 	const { user, authenticate } = useSessionStore();
@@ -34,10 +35,6 @@ const App = () => {
 						<Route path="/signup" element={<SignupFormPage />} />
 						<Route path="/login" element={<LoginFormPage />} />
 						<Route path="/home" element={<HomePage />} />
-						<Route path="/entries" element={<EntriesPage />} />
-						<Route path="/entries/new" element={<CreateEntryPage />} />
-						<Route path="/entries/:entryId" element={<ViewEntryPage />} />
-						<Route path="/entries/:entryId/edit" element={<EditEntryPage />} />
 						{user && (
 							<>
 								<Route
@@ -45,8 +42,16 @@ const App = () => {
 									element={<UserProfile userId={user.id} />}
 								/>
 								<Route
-									path="/change-password"
+									path="/profile/change-password"
 									element={<ChangePassword userId={user.id} />}
+								/>
+								<Route path="/profile/update" element={<UpdateProfilePage />} />
+								<Route path="/entries" element={<EntriesPage />} />
+								<Route path="/entries/new" element={<CreateEntryPage />} />
+								<Route path="/entries/:entryId" element={<ViewEntryPage />} />
+								<Route
+									path="/entries/:entryId/edit"
+									element={<EditEntryPage />}
 								/>
 							</>
 						)}
