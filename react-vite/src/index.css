@@ -1,2 +1,22 @@
 /* TODO: Add sitewide styles */
 @import "tailwindcss";
+
+@theme {
+	--font-sans: InterVariable, sans-serif;
+}
+
+@theme {
+	--color-background: #0b0c10; /* Deep dark background */
+	--color-text: oklch(0.811 0.111 293.571); /* text-violet-300 */
+	--color-primary: rgba(97, 8, 196, 1); /* Your selected shade */
+	--color-accent: rgba(97, 8, 196, 0.8); /* Slightly muted version */
+	--color-border: rgba(138, 43, 226, 0.3);
+	--color-glow: rgba(97, 8, 196, 1); /* Glow effect color */
+}
+
+body {
+	background-color: var(--color-background);
+	color: var(--color-text);
+}
+
+/* --color-border: rgba(97, 8, 196, 0.5); Darker muted violet */

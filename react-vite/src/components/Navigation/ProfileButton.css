@@ -3,8 +3,8 @@
 	position: absolute;
 	top: 100%;
 	right: 0;
-	background: white;
-	border: 1px solid #ccc;
+	background: #0b0c10;
+
 	border-radius: 4px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 	padding: 10px 0;
@@ -33,11 +33,6 @@
 	border: none;
 	cursor: pointer;
 	font-size: 14px;
-	transition: background 0.2s ease-in-out;
-}
-
-.dropdown-item:hover {
-	background: #f0f0f0;
 }
 
 .logout-btn {

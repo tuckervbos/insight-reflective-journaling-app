@@ -110,51 +110,37 @@ const WeatherFetcher = ({ onWeatherFetched = () => {} }) => {
 	};
 
 	return (
-		<div
-			className="weather-container"
-			style={{
-				backgroundColor: "black", // Set background to black
-				color: "white", // Text color stays white for contrast
-				padding: "1rem",
-				borderRadius: "8px",
-				boxShadow: "0 0 8px rgba(255, 94, 77, 0.5)", // Subtle red glow
-				border: "1px solid rgba(255, 94, 77, 0.6)", // Slight red border for definition
-			}}
-		>
-			{loading && <p>fetching weather data...</p>}
-			{error && <p style={{ color: "red" }}>{error}</p>}
+		<div className="bg-black text-white p-4 rounded-lg border border-violet-500 shadow-lg shadow-violet-500/50">
+			{loading && <p className="text-violet-300">Fetching weather data...</p>}
+			{error && <p className="text-red-500">{error}</p>}
 			{!weather && (
-				<div>
+				<div className="flex flex-col space-y-2">
 					<input
 						type="text"
 						placeholder="Enter city or ZIP code"
 						value={location}
 						onChange={(e) => setLocation(e.target.value)}
+						className="bg-background text-white border border-gray-600 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
 					/>
-					<GlowButton onClick={fetchWeatherByCity}>get weather</GlowButton>
+					<GlowButton onClick={fetchWeatherByCity} className="bg-violet-600">
+						Get Weather
+					</GlowButton>
 				</div>
 			)}
 			{weather && (
 				<div>
-					<h3>
+					<h3 className="text-lg font-semibold text-violet-400">
 						Weather in{" "}
-						{weather?.city
+						{weather.city
 							? `${weather.city}, ${weather.country}`
 							: "Unknown Location"}
 					</h3>
-					<p>
-						{weather.weatherDescription},{" "}
-						{weather.temperature !== "N/A"
-							? `${weather.temperature}°F`
-							: "No temperature data"}
+					<p className="text-gray-300">
+						{weather.weatherDescription}, {weather.temperature}°F
 					</p>
-					{weather.weather && weather.weather[0] && weather.weather[0].icon && (
-						<img
-							src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-							alt="Weather Icon"
-						/>
-					)}
-					<h4>Moon Phase: {moonPhase || "Loading..."}</h4>
+					<h4 className="text-md text-gray-400">
+						Moon Phase: {moonPhase || "Loading..."}
+					</h4>
 				</div>
 			)}
 		</div>

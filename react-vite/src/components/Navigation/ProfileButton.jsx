@@ -51,11 +51,7 @@ function ProfileButton() {
 
 	return (
 		<>
-			<GlowButton
-				className="profile-icon"
-				style={{ filter: "drop-shadow(0 0 8px rgba(255, 94, 77, 0.8))" }}
-				onClick={toggleMenu}
-			>
+			<GlowButton className="profile-icon" onClick={toggleMenu}>
 				<FaUserCircle />
 			</GlowButton>
 			{showMenu && (

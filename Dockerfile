@@ -24,11 +24,25 @@ RUN pip install psycopg2
 
 # copy the full application code
 COPY . .
-RUN ls -l /var/www
+
+
+# checks file type of start.sh
 RUN file /var/www/start.sh
+
+# grants executable permissions to start.sh,
+# ensures script can be executed in container
+# why? prevents permission denied error when 
+# running CMT ["./start.sh"]
 RUN chmod +x /var/www/start.sh
 
+
+# this tries to set executable permissions on start.sh
+# from the current working directory (WORKDIR /var/www)
+# why? var/www/start.sh is not found, this second command
+# double-checks for file in working directory
 RUN chmod +x start.sh
+
+
 CMD ["./start.sh"]
 
 # run migrations and seed database

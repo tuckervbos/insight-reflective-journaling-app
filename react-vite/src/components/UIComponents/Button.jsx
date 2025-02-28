@@ -3,31 +3,34 @@ import { motion } from "motion/react";
 export const GlowButton = ({ children, onClick, className = "" }) => {
 	const glowVariants = {
 		initial: {
-			boxShadow:
-				"0 0 5px 0px rgba(255, 94, 77, 0.5), 0 0 10px 0px rgba(255, 94, 77, 0.3), 0 0 15px 0px rgba(255, 94, 77, 0.2)",
+			boxShadow: "0 0 0 1px rgba(138, 43, 226, 0.8)", // Violet glow
 		},
 		animate: {
 			boxShadow: [
-				"0 0 5px 0px rgba(255, 94, 77, 0.5), 0 0 10px 0px rgba(255, 94, 77, 0.3), 0 0 15px 0px rgba(255, 94, 77, 0.2)",
-				"0 0 10px 2px rgba(255, 94, 77, 0.6), 0 0 20px 4px rgba(255, 94, 77, 0.4), 0 0 30px 6px rgba(255, 94, 77, 0.2)",
-				"0 0 5px 0px rgba(255, 94, 77, 0.5), 0 0 10px 0px rgba(255, 94, 77, 0.3), 0 0 15px 0px rgba(255, 94, 77, 0.2)",
+				"0 0 0 1px rgba(138, 43, 226, 0.3), 0 0 0 0px rgba(138, 43, 226, 0.2)",
+				"0 0 0 1px rgba(138, 43, 226, 0.5), 0 0 0 3px rgba(138, 43, 226, 0.3)",
+				"0 0 0 1px rgba(138, 43, 226, 0.3), 0 0 0 0px rgba(138, 43, 226, 0.2)",
 			],
 			transition: {
-				duration: 2,
+				duration: 8,
 				repeat: Infinity,
 				ease: "easeInOut",
 			},
 		},
 		hover: {
-			scale: 1.05,
+			scale: 1.02, // Subtle scale effect
 			boxShadow:
-				"0 0 15px 3px rgba(255, 94, 77, 0.7), 0 0 30px 6px rgba(255, 94, 77, 0.5), 0 0 45px 9px rgba(255, 94, 77, 0.3)",
+				"0 0 6px rgba(138, 43, 226, 0.7), 0 0 12px rgba(138, 43, 226, 0.4)", // Smoother shadow change
+			transition: {
+				duration: 0.1, // Slower transition to prevent "jumps"
+				ease: "easeInOut",
+			},
 		},
 	};
 
 	return (
 		<motion.button
-			className={`relative text-orange-400 border border-orange-500 px-6 py-3 rounded-md font-medium transition-all duration-300 ease-in-out hover:bg-orange-900 hover:text-white ${className}`}
+			className={`relative bg-background text-violet-300 px-6 py-3 rounded-md font-medium transition duration-20 shadow-violet-500/50 ${className}`}
 			variants={glowVariants}
 			initial="initial"
 			animate="animate"

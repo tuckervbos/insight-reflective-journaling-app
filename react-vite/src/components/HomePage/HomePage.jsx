@@ -1,109 +1,105 @@
 import useSessionStore from "../../store/sessionStore";
-import { useEffect, useRef } from "react";
+import useEntriesStore from "../../store/entriesStore";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import WeatherFetcher from "../WeatherFetcher/WeatherFetcher";
 import { GlowButton, GlowCard, DarkThemeProvider } from "../UIComponents";
-import { useAnimationFrame } from "motion/react";
+import JournalCalendar from "../Calendar/JournalCalendar";
 
 function HomePage() {
 	const user = useSessionStore((state) => state.user);
 	const authenticate = useSessionStore((state) => state.authenticate);
+	const { entries, fetchEntries } = useEntriesStore();
 	const navigate = useNavigate();
 
-	// Ensure user session is checked on mount
 	useEffect(() => {
 		authenticate();
-	}, [authenticate]);
+		fetchEntries();
+	}, [authenticate, fetchEntries]);
 
-	// Redirect to landing page if user is not logged in
 	useEffect(() => {
 		if (!user) {
 			navigate("/");
 		}
 	}, [user, navigate]);
 
-	// Loading state (optional, but useful if needed)
-	if (user === undefined) {
-		return <div>Loading...</div>;
-	}
-
-	// Cube Animation
-	const cubeRef = useRef(null);
-	useAnimationFrame((t) => {
-		if (!cubeRef.current) return;
-		const rotate = Math.sin(t / 10000) * 200;
-		const y = (1 + Math.sin(t / 1000)) * -50;
-		cubeRef.current.style.transform = `translateY(${y}px) rotateX(${rotate}deg) rotateY(${rotate}deg)`;
-	});
-
 	return (
 		<DarkThemeProvider>
-			<div className="min-h-screen flex flex-col items-center justify-center bg-black text-white">
-				<h1 className="text-4xl font-bold text-orange-400 mb-6">
+			<div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-4 py-12">
+				<h1 className="text-5xl font-extralight text-violet-400 mb-6">
 					Welcome to Insight
 				</h1>
-				<p className="text-gray-400 mb-4">
+				<p className="text-gray-400 mb-6">
 					Reflect on your thoughts and track your progress.
 				</p>
 
-				{/* Weather & Moon Data */}
-				<GlowCard className="w-full max-w-lg p-6 mb-6">
-					<WeatherFetcher />
-				</GlowCard>
+				{/* Main Layout Grid */}
+				<div className="grid grid-cols-12 gap-2 w-full max-w-6xl">
+					{/* Left: Calendar (Wider than before) */}
+					<div className="col-span-5">
+						<GlowCard className=" w-full">
+							<JournalCalendar />
+						</GlowCard>
+					</div>
 
-				{/* Quick Actions */}
-				<div className="flex space-x-4">
-					<GlowButton onClick={() => navigate("/entries")}>
-						View Entries
-					</GlowButton>
-					<GlowButton onClick={() => navigate("/entries/new")}>
-						New Entry
-					</GlowButton>
-					<GlowButton onClick={() => navigate("/profile")}>Profile</GlowButton>
-				</div>
+					{/* center buttons */}
+					<div className="col-span-2 flex flex-col items-center space-y-4 self-start p-2">
+						<GlowButton
+							className="px-2 py-3 text-xs w-full"
+							onClick={() => navigate("/entries")}
+						>
+							View Entries
+						</GlowButton>
+						<GlowButton
+							className="px-2 py-2 text-xs w-full"
+							onClick={() => navigate("/entries/new")}
+						>
+							New Entry
+						</GlowButton>
+						<GlowButton
+							className="px-2 py-2 text-xs w-full"
+							onClick={() => navigate("/profile")}
+						>
+							Profile
+						</GlowButton>
+					</div>
 
-				{/* Animated Cube */}
-				<div className="fixed bottom-5 right-5">
-					<div className="cube-container">
-						<div className="cube" ref={cubeRef}>
-							<div className="side front" />
-							<div className="side left" />
-							<div className="side right" />
-							<div className="side top" />
-							<div className="side bottom" />
-							<div className="side back" />
-						</div>
+					{/* Center: Weather + Recent Entries (Stacked, Smaller than before) */}
+					<div className="col-span-5 flex flex-col space-y-5">
+						<GlowCard className="p-4">
+							<WeatherFetcher />
+						</GlowCard>
+						<GlowCard className="p-4">
+							<h2 className="text-violet-400 text-lg font-semibold mb-4">
+								Recent Entries
+							</h2>
+							{entries && entries.length > 0 ? (
+								entries.slice(0, 5).map((entry) => (
+									<div
+										key={entry.id}
+										className="border-b border-violet-500 p-2"
+									>
+										<p className="text-gray-300">{entry.title}</p>
+										<p
+											className={`text-sm ${
+												entry.sentiment?.toLowerCase() === "positive"
+													? "text-green-400"
+													: entry.sentiment?.toLowerCase() === "negative"
+													? "text-red-400"
+													: "text-gray-400"
+											}`}
+										>
+											{entry.sentiment || "No Sentiment"}
+										</p>
+									</div>
+								))
+							) : (
+								<p className="text-gray-500">No entries yet.</p>
+							)}
+						</GlowCard>
 					</div>
 				</div>
 			</div>
-
-			{/* Cube Styles */}
-			<style>{`
-		  .cube-container {
-			perspective: 800px;
-			width: 100px;
-			height: 100px;
-		  }
-		  .cube {
-			width: 100px;
-			height: 100px;
-			position: relative;
-			transform-style: preserve-3d;
-		  }
-		  .side {
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			opacity: 0.6;
-			background: radial-gradient(circle, rgba(255,69,0,0.8) 0%, rgba(255,69,0,0.2) 100%);
-		  }
-		  .front { transform: rotateY(0deg) translateZ(50px); }
-		  .right { transform: rotateY(90deg) translateZ(50px); }
-		  .back { transform: rotateY(180deg) translateZ(50px); }
-		  .left { transform: rotateY(-90deg) translateZ(50px); }
-		  .top { transform: rotateX(90deg) translateZ(50px); }
-		  .bottom { transform: rotateX(-90deg) translateZ(50px); }
-		`}</style>
 		</DarkThemeProvider>
 	);
 }

@@ -63,7 +63,7 @@ def get_moon_phase():
         print(f"Error fetching moon phase: {e}")
         return jsonify({"phase": "Unknown"}), 500
 
-@entry_routes.route("/", methods=["GET"], strict_slashes=False)
+@entry_routes.route("/", methods=["GET"])
 @login_required
 def get_entries():
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createEntry } from "../../utils/api";
 import WeatherFetcher from "../WeatherFetcher/WeatherFetcher";
+import { GlowButton } from "../UIComponents";
 
 const CreateEntryPage = () => {
 	const [title, setTitle] = useState("");
@@ -38,20 +39,24 @@ const CreateEntryPage = () => {
 	};
 
 	return (
-		<div>
-			<h2>Create New Journal Entry</h2>
-			{error && <p style={{ color: "red" }}>{error}</p>}
+		<div className="bg-black text-gray-300 p-6 rounded-lg shadow-glow max-w-3xl mx-auto">
+			<h2 className="text-3xl font-semibold text-blurple mb-4">
+				Create New Journal Entry
+			</h2>
+			{error && <p className="text-red-400">{error}</p>}
 
 			<input
 				type="text"
 				placeholder="Title"
 				value={title}
 				onChange={(e) => setTitle(e.target.value)}
+				className="w-full p-3 border border-violet-500 rounded-md focus:ring focus:ring-violet mb-4 shadow-lg shadow-violet-500/50"
 			/>
 			<textarea
 				placeholder="Write your journal entry here..."
 				value={body}
 				onChange={(e) => setBody(e.target.value)}
+				className="w-full h-100 p-3 border border-violet-500 rounded-md focus:ring focus:ring-violet mb-4 shadow-lg shadow-violet-500/50"
 			></textarea>
 
 			{/* <WeatherFetcher
@@ -83,7 +88,9 @@ const CreateEntryPage = () => {
 				}}
 			/>
 
-			<button onClick={handleCreateEntry}>Save Entry</button>
+			<div className="mt-4 flex justify-end">
+				<GlowButton onClick={handleCreateEntry}>Save Entry</GlowButton>
+			</div>
 		</div>
 	);
 };

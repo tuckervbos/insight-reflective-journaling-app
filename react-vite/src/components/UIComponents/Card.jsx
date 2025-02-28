@@ -1,19 +1,18 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export const GlowCard = ({ children, className = "" }) => {
-	// Infinity mirror animation for the card
 	const cardVariants = {
 		initial: {
-			boxShadow: "0 0 0 1px rgba(255, 94, 77, 0.3)", // Red/Orange glow
+			boxShadow: "0 0 0 1px rgba(138, 43, 226, 0.3)", // Violet glow
 		},
 		animate: {
 			boxShadow: [
-				"0 0 0 1px rgba(255, 94, 77, 0.3), 0 0 0 0px rgba(255, 94, 77, 0.2), 0 0 0 0px rgba(255, 94, 77, 0.1)",
-				"0 0 0 1px rgba(255, 94, 77, 0.5), 0 0 0 3px rgba(255, 94, 77, 0.3), 0 0 0 6px rgba(255, 94, 77, 0.1)",
-				"0 0 0 1px rgba(255, 94, 77, 0.3), 0 0 0 0px rgba(255, 94, 77, 0.2), 0 0 0 0px rgba(255, 94, 77, 0.1)",
+				"0 0 0 1px rgba(138, 43, 226, 0.3), 0 0 0 0px rgba(138, 43, 226, 0.2)",
+				"0 0 0 1px rgba(138, 43, 226, 0.5), 0 0 0 3px rgba(138, 43, 226, 0.3)",
+				"0 0 0 1px rgba(138, 43, 226, 0.3), 0 0 0 0px rgba(138, 43, 226, 0.2)",
 			],
 			transition: {
-				duration: 4,
+				duration: 8,
 				repeat: Infinity,
 				ease: "easeInOut",
 			},
@@ -22,7 +21,7 @@ export const GlowCard = ({ children, className = "" }) => {
 
 	return (
 		<motion.div
-			className={`bg-red-950 border border-red-700 p-6 rounded-lg ${className}`}
+			className="bg-background p-4 rounded-lg m-2"
 			variants={cardVariants}
 			initial="initial"
 			animate="animate"

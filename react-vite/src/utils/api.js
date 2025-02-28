@@ -14,18 +14,30 @@ export const getCsrfToken = async () => {
 		}
 		const data = await response.json();
 		csrfToken = data.csrf_token; // store the csrf token globally
-		document.cookie = `csrf_token=${csrfToken}; path=/`; // optionally set it in cookies
+		// document.cookie = `csrf_token=${csrfToken}; path=/`; // optionally set it in cookies
+		sessionStorage.setItem("csrf_token", csrfToken);
+
+		console.log("✅ CSRF Token stored:", csrfToken);
 	} catch (error) {
 		console.error("Error fetching CSRF token:", error);
 		throw error;
 	}
 };
 
+// Helper function to retrieve the token from sessionStorage
+export const getStoredCsrfToken = () => {
+	return sessionStorage.getItem("csrf_token");
+};
+
 // authenticate the user session
 export const authenticate = async () => {
 	try {
-		const response = await fetch("/api/auth/", {
+		const response = await fetch("/api/auth", {
 			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken, // include csrf token in headers
+			},
 			credentials: "include", // include cookies
 		});
 		if (response.status === 401) {
@@ -231,8 +243,12 @@ export const fetchUser = async (id) => {
 // Fetch authenticated user details
 export const fetchAuthenticatedUser = async () => {
 	try {
-		const response = await fetch("/api/auth/", {
+		const response = await fetch("/api/auth", {
 			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
 			credentials: "include",
 		});
 		if (!response.ok) throw new Error("Failed to authenticate user.");

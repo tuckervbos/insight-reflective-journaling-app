@@ -12,7 +12,7 @@ def restore_csrf():
     csrf_token = generate_csrf()
     response = make_response({'csrf_token': csrf_token}, 200)
     response.set_cookie('csrf_token', csrf_token, httponly=False, path='/')
-    session['csrf_token'] = csrf_token 
+    # session['csrf_token'] = csrf_token 
     return response
 
 @auth_routes.route("/", methods=["GET"])
@@ -32,6 +32,8 @@ def login():
     # Get the csrf_token from the request cookie and put it into the
     # form manually to validate_on_submit can be used
     form['csrf_token'].data = request.cookies['csrf_token']
+    print("Cookies:", request.cookies)
+    print("Session:", session)
     if form.validate_on_submit():
         # Add the user to the session, we are logged in!
         user = User.query.filter(User.email == form.data['email']).first()

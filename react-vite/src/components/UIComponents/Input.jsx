@@ -24,7 +24,7 @@ export const GlowInput = ({ placeholder, value, onChange, className = "" }) => {
 		<motion.div className="relative">
 			<motion.input
 				type="text"
-				className={`w-full bg-gray-800 text-red-200100 border border-cyan-700 px-4 py-2 rounded-md focus:outline-none ${className}`}
+				className="bg-background  focus:ring-violet-500"
 				placeholder={placeholder}
 				value={value}
 				onChange={onChange}
