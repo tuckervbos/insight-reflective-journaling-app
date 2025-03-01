@@ -3,6 +3,7 @@ import { login, authenticate } from "../../utils/api";
 import { Navigate, useNavigate } from "react-router-dom";
 import useSessionStore from "../../store/sessionStore";
 import { GlowCard, GlowButton, GlowInput } from "../UIComponents";
+import DemoLogin from "../DemoLogin/DemoLogin";
 
 const LoginFormPage = () => {
 	const navigate = useNavigate();
@@ -91,6 +92,7 @@ const LoginFormPage = () => {
 						Log In
 					</GlowButton>
 				</form>
+				<DemoLogin />
 				<p className="text-sm text-gray-400 mt-4 text-center">
 					Don&apos;t have an account?{" "}
 					<span

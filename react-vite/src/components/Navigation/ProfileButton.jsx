@@ -59,7 +59,7 @@ function ProfileButton() {
 			{showMenu && (
 				<ul
 					ref={ulRef}
-					className="absolute top-full right-0 mt-2 w-auto bg-background border border-violet-500 rounded-md shadow-lg z-50 p-2"
+					className="absolute top-full right-0 mt-2 min-w-50 max-w-auto bg-background border border-violet-500 rounded-md shadow-lg z-50 p-2"
 				>
 					{user ? (
 						<>
@@ -104,7 +104,7 @@ function ProfileButton() {
 						<>
 							<li>
 								<GlowButton
-									className="w-full text-left"
+									className="w-full text-center mb-2"
 									onClick={() => {
 										navigate("/login");
 										setShowMenu(false);
@@ -115,7 +115,7 @@ function ProfileButton() {
 							</li>
 							<li>
 								<GlowButton
-									className="w-full text-left"
+									className="w-full text-center"
 									onClick={() => {
 										navigate("/signup");
 										setShowMenu(false);

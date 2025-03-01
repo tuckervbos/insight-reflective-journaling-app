@@ -7,6 +7,19 @@ from app.forms import LoginForm, SignUpForm
 
 auth_routes = Blueprint('auth', __name__)
 
+@auth_routes.route('/demo', methods=['POST'])
+def demo_login():
+    """Logs in the demo user"""
+    demo_user = User.query.filter_by(email="demo@example.com").first()
+
+    if not demo_user:
+        return jsonify({"error": "Demo user not found"}), 404
+
+    login_user(demo_user)  # Ensure user is properly logged in
+    session["user_id"] = demo_user.id  # Set session manually
+
+    return jsonify(demo_user.to_dict())  # Ensure full user data is returned
+
 @auth_routes.route('/csrf/restore', methods=['GET'])
 def restore_csrf():
     csrf_token = generate_csrf()
