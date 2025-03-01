@@ -323,6 +323,132 @@ export const deleteUser = async (id) => {
 	}
 };
 
+// ------------------------------ goals --------------------------------
+
+// Fetch all goals with pagination
+export const fetchGoals = async (page = 1, perPage = 10) => {
+	try {
+		if (!csrfToken) await getCsrfToken(); // Ensure CSRF token is set
+		const response = await fetch(
+			`/api/goals?page=${page}&per_page=${perPage}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"X-CSRF-TOKEN": csrfToken,
+				},
+				credentials: "include",
+			}
+		);
+		if (!response.ok) throw new Error("Failed to fetch goals.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching goals:", error);
+		throw error;
+	}
+};
+
+// Fetch a specific goal by ID
+export const fetchGoalById = async (id) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/goals/${id}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to fetch goal.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching goal:", error);
+		throw error;
+	}
+};
+
+// Create a new goal
+export const createGoal = async (goalData) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch("/api/goals", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+			body: JSON.stringify(goalData),
+		});
+		if (!response.ok) throw new Error("Failed to create goal.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error creating goal:", error);
+		throw error;
+	}
+};
+
+// Update an existing goal
+export const updateGoal = async (id, updatedData) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/goals/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+			body: JSON.stringify(updatedData),
+		});
+		if (!response.ok) throw new Error("Failed to update goal.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error updating goal:", error);
+		throw error;
+	}
+};
+
+// Delete a goal
+export const deleteGoal = async (id) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/goals/${id}`, {
+			method: "DELETE",
+			headers: {
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to delete goal.");
+		return { success: true };
+	} catch (error) {
+		console.error("Error deleting goal:", error);
+		throw error;
+	}
+};
+
+// Fetch goals associated with a specific entry
+export const fetchGoalsForEntry = async (entryId) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/goals/entry/${entryId}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to fetch goals for entry.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching goals for entry:", error);
+		throw error;
+	}
+};
+
 // Export all functions
 export default {
 	getCsrfToken,
@@ -339,4 +465,10 @@ export default {
 	updatePassword,
 	deleteUser,
 	fetchAuthenticatedUser,
+	fetchGoals,
+	fetchGoalById,
+	createGoal,
+	updateGoal,
+	deleteGoal,
+	fetchGoalsForEntry,
 };

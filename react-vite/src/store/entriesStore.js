@@ -4,7 +4,7 @@ import {
 	createEntry,
 	updateEntry,
 	deleteEntry,
-} from "../utils/api"; // Use correct imports
+} from "../utils/api";
 
 const useEntriesStore = create((set) => ({
 	entries: [],

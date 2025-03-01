@@ -87,3 +87,15 @@ def delete_goal(id):
     db.session.delete(goal)
     db.session.commit()
     return jsonify({'message': 'Goal deleted successfully'})
+
+@goal_routes.route('/entry/<int:entry_id>', methods=['GET'])
+@login_required
+def get_goals_for_entry(entry_id):
+    """Fetch goals associated with a specific entry."""
+    entry_goals = EntryGoal.query.filter_by(entry_id=entry_id).all()
+    goals = [entry_goal.goal.to_dict() for entry_goal in entry_goals]
+    
+    if not goals:
+        return jsonify({"message": "No goals found for this entry."}), 404
+    
+    return jsonify(goals), 200

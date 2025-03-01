@@ -116,7 +116,7 @@ const WeatherFetcher = ({ onWeatherFetched = () => {} }) => {
 		<div className="bg-black text-white p-4 rounded-lg border border-violet-500 shadow-lg shadow-violet-500/50">
 			{showHeader && (
 				<h3 className="text-violet-400 text-center font-semibold mb-3">
-					Just a moment, getting weather from location... <br />
+					Just a moment, getting weather from browser location data... <br />
 					Or, type your city or ZIP code below:
 				</h3>
 			)}
