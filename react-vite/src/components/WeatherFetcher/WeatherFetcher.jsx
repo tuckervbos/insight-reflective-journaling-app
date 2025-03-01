@@ -7,6 +7,7 @@ const WeatherFetcher = ({ onWeatherFetched = () => {} }) => {
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [moonPhase, setMoonPhase] = useState(null);
+	const [showHeader, setShowHeader] = useState(true);
 
 	// fetch moon phase from backend
 	const fetchMoonPhase = async () => {
@@ -52,6 +53,7 @@ const WeatherFetcher = ({ onWeatherFetched = () => {} }) => {
 			setWeather({ weatherDescription, temperature, city, country });
 			console.log("Final Moon Phase Data:", moonPhaseData); // Debugging
 			setError(null);
+			setShowHeader(false);
 			onWeatherFetched(
 				{ weatherDescription, temperature, city, country },
 				moonPhaseData
@@ -98,6 +100,7 @@ const WeatherFetcher = ({ onWeatherFetched = () => {} }) => {
 			const data = await response.json();
 			setWeather(data);
 			setError(null);
+			setShowHeader(false);
 			onWeatherFetched(`${data.name}, ${data.sys.country}`);
 			fetchMoonPhase();
 		} catch (err) {
@@ -111,6 +114,12 @@ const WeatherFetcher = ({ onWeatherFetched = () => {} }) => {
 
 	return (
 		<div className="bg-black text-white p-4 rounded-lg border border-violet-500 shadow-lg shadow-violet-500/50">
+			{showHeader && (
+				<h3 className="text-violet-400 text-center font-semibold mb-3">
+					Just a moment, getting weather from location... <br />
+					Or, type your city or ZIP code below:
+				</h3>
+			)}
 			{loading && <p className="text-violet-300">Fetching weather data...</p>}
 			{error && <p className="text-red-500">{error}</p>}
 			{!weather && (
