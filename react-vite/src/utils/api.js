@@ -159,6 +159,28 @@ export const fetchEntries = async () => {
 	}
 };
 
+// Fetch a specific entry by ID
+export const fetchEntryById = async (id) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/entries/${id}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to fetch entry.");
+		const entry = await response.json();
+		console.log("Fetched Entry:", entry); // ✅ Debugging output
+		return entry;
+	} catch (error) {
+		console.error("Error fetching entry by ID:", error);
+		throw error;
+	}
+};
+
 // create a new entry
 export const createEntry = async (entryData, location) => {
 	try {
@@ -457,6 +479,7 @@ export default {
 	logout,
 	signup,
 	fetchEntries,
+	fetchEntryById,
 	createEntry,
 	updateEntry,
 	deleteEntry,

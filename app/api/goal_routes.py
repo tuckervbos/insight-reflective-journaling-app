@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import Goal, db, GoalStatus
+from app.models import Goal, db, GoalStatus, EntryGoal
 from flask_login import login_required, current_user
 from sqlalchemy.exc import ArgumentError  # Import to handle conversion errors
 from datetime import datetime
@@ -47,6 +47,14 @@ def create_goal():
         )
         db.session.add(goal)
         db.session.commit()
+
+        # Associate goal with an entry via entry_goals join table
+        entry_id = data.get('entry_id')
+        if entry_id:
+            entry_goal = EntryGoal(entry_id=entry_id, goal_id=goal.id)
+            db.session.add(entry_goal)
+            db.session.commit()
+
         return jsonify(goal.to_dict()), 201
     except IntegrityError:
         db.session.rollback()
@@ -95,6 +103,9 @@ def get_goals_for_entry(entry_id):
     entry_goals = EntryGoal.query.filter_by(entry_id=entry_id).all()
     goals = [entry_goal.goal.to_dict() for entry_goal in entry_goals]
     
+    print(f"Fetching goals for entry ID: {entry_id}")
+    print(f"Found entry goals: {entry_goals}")
+
     if not goals:
         return jsonify({"message": "No goals found for this entry."}), 404
     

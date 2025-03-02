@@ -4,6 +4,7 @@ import {
 	createEntry,
 	updateEntry,
 	deleteEntry,
+	fetchEntryById,
 } from "../utils/api";
 
 const useEntriesStore = create((set) => ({
@@ -16,6 +17,20 @@ const useEntriesStore = create((set) => ({
 			set({ entries: data });
 		} catch (error) {
 			console.error("Error fetching entries:", error);
+		}
+	},
+
+	// Fetch an entry by an ID
+	fetchEntryById: async (id) => {
+		try {
+			const entry = await fetchEntryById(id);
+			set((state) => ({
+				entries: [...state.entries.filter((e) => e.id !== id), entry],
+			}));
+			return entry;
+		} catch (error) {
+			console.error("Error fetching entry by ID:", error);
+			throw error;
 		}
 	},
 
@@ -54,6 +69,9 @@ const useEntriesStore = create((set) => ({
 			console.error("Error deleting entry:", error);
 		}
 	},
+
+	// Set entries directly (useful for setting fetched data)
+	setEntries: (entries) => set({ entries }),
 }));
 
 export default useEntriesStore;

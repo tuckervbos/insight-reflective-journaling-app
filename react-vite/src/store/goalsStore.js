@@ -83,6 +83,8 @@ const useGoalsStore = create((set) => ({
 			console.error("Error fetching goals for entry:", error);
 		}
 	},
+	// Clear all goals
+	clearGoals: () => set({ goals: [] }),
 }));
 
 export default useGoalsStore;

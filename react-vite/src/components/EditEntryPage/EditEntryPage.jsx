@@ -13,46 +13,56 @@ const pageVariants = {
 };
 
 const EditEntryPage = () => {
-	const { entryId } = useParams(); // Get entry ID from URL
+	const { entryId } = useParams();
 	const navigate = useNavigate();
-	const { entries, updateEntry } = useEntriesStore();
+	const { entries, updateEntry, fetchEntryById, setEntries } =
+		useEntriesStore();
 
-	// Find the existing entry safely
-	const existingEntry = entries.find((e) => e.id === parseInt(entryId, 10));
+	const [editedEntry, setEditedEntry] = useState({ title: "", body: "" });
 
-	const [editedEntry, setEditedEntry] = useState({
-		title: existingEntry?.title || "",
-		body: existingEntry?.body || "",
-	});
-
-	// Prevents useEffect from running if existingEntry is undefined
 	useEffect(() => {
-		if (existingEntry) {
-			setEditedEntry({ title: existingEntry.title, body: existingEntry.body });
-		}
-	}, [existingEntry]);
+		const loadEntry = async () => {
+			let existingEntry = entries.find((e) => e.id === parseInt(entryId, 10));
 
-	// Handle changes to input fields
+			if (!existingEntry && entryId) {
+				try {
+					existingEntry = await fetchEntryById(entryId);
+					if (existingEntry) {
+						setEntries([existingEntry]);
+					}
+				} catch (error) {
+					console.error("Failed to fetch entry:", error);
+				}
+			}
+
+			if (existingEntry) {
+				setEditedEntry({
+					title: existingEntry.title,
+					body: existingEntry.body,
+				});
+			}
+		};
+
+		loadEntry();
+	}, [entryId, entries, fetchEntryById, setEntries]);
+
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setEditedEntry((prev) => ({ ...prev, [name]: value }));
 	};
 
-	// Save changes with validation
-	const handleSave = (e) => {
-		e.preventDefault(); // Prevent default form submission
-
+	const handleSave = async (e) => {
+		e.preventDefault();
 		if (!editedEntry.title.trim() || !editedEntry.body.trim()) {
 			alert("Both Title and Entry body are required.");
 			return;
 		}
 
-		updateEntry(entryId, editedEntry);
-		navigate("/entries"); // Redirect after saving
+		await updateEntry(entryId, editedEntry);
+		navigate(`/entries/${entryId}`);
 	};
 
-	// Handle missing entry case
-	if (!existingEntry) {
+	if (!editedEntry.title && !editedEntry.body) {
 		return (
 			<div className="container mx-auto py-12 px-6">
 				<GlowCard className="p-6 text-center">
