@@ -15,7 +15,7 @@ const pageVariants = {
 
 const CreateGoalPage = () => {
 	const navigate = useNavigate();
-	const { createGoal, clearGoals, fetchGoals } = useGoalsStore();
+	const { createGoal } = useGoalsStore();
 
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
@@ -23,12 +23,25 @@ const CreateGoalPage = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-
-		const newGoal = await createGoal({ title, description, status });
-
-		if (newGoal && newGoal.id) {
-			// clearGoals();
-			navigate(`/goals/${newGoal.id}`);
+		if (!title.trim()) {
+			alert("Title is required to save a goal.");
+			return;
+		}
+		if (!description.trim()) {
+			alert("Description is required to save a goal.");
+			return;
+		}
+		try {
+			const newGoal = await createGoal({
+				title,
+				description,
+				status,
+			});
+			if (newGoal && newGoal.id) {
+				navigate(`/goals/${newGoal.id}`);
+			}
+		} catch (error) {
+			console.error("Failed to create a goal", error);
 		}
 	};
 
@@ -60,6 +73,7 @@ const CreateGoalPage = () => {
 						onChange={(e) => setDescription(e.target.value)}
 						placeholder="Goal Description"
 						required
+						minLength="3"
 					/>
 					<select
 						value={status}

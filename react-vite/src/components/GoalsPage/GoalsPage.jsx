@@ -56,6 +56,11 @@ const GoalsPage = () => {
 				<h1 className="text-3xl font-semibold text-violet-300 mb-4">
 					Your Goals
 				</h1>
+				<div className="mt-6 mb-5 mr-2 flex justify-end">
+					<GlowButton onClick={() => navigate("/goals/new")}>
+						Add New Goal
+					</GlowButton>
+				</div>
 				{sortedGoals.length === 0 ? (
 					<p className="text-gray-500">
 						No goals found. Start setting new goals!

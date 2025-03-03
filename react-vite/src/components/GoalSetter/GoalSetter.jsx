@@ -27,6 +27,15 @@ const GoalSetter = ({ entryId, navigate }) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		if (!title.trim()) {
+			alert("Title is required to save a goal.");
+			return;
+		}
+		if (!description.trim()) {
+			alert("Description is required to save a goal.");
+			return;
+		}
+
 		if (!entryId) {
 			return;
 		}

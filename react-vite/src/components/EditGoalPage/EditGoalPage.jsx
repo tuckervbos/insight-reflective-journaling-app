@@ -61,6 +61,17 @@ const EditGoalPage = () => {
 
 	const handleUpdate = async (e) => {
 		e.preventDefault();
+
+		if (!title.trim()) {
+			alert("Title is required to update the goal.");
+			return;
+		}
+
+		if (!description.trim()) {
+			alert("Description is required to update the goal.");
+			return;
+		}
+
 		try {
 			await updateGoal(goalId, {
 				title,
