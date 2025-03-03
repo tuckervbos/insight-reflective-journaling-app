@@ -15,7 +15,7 @@ const pageVariants = {
 
 const CreateGoalPage = () => {
 	const navigate = useNavigate();
-	const { createGoal, clearGoals } = useGoalsStore();
+	const { createGoal, clearGoals, fetchGoals } = useGoalsStore();
 
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
@@ -23,20 +23,12 @@ const CreateGoalPage = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		console.log("Save Goal button clicked");
 
-		try {
-			const newGoal = await createGoal({ title, description, status });
-			console.log("New Goal created:", newGoal);
+		const newGoal = await createGoal({ title, description, status });
 
-			if (newGoal && newGoal.id) {
-				clearGoals();
-				navigate(`/goals/${newGoal.id}`);
-			} else {
-				console.warn("Failed to create a goal or invalid response.");
-			}
-		} catch (error) {
-			console.error("Error in handleSubmit:", error);
+		if (newGoal && newGoal.id) {
+			// clearGoals();
+			navigate(`/goals/${newGoal.id}`);
 		}
 	};
 

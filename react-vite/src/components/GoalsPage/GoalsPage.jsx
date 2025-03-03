@@ -4,6 +4,7 @@ import useGoalsStore from "../../store/goalsStore";
 import { GlowButton } from "../UIComponents/Button";
 import { GlowCard } from "../UIComponents/Card";
 import { motion } from "framer-motion";
+// import useEntriesStore from "../../store/entriesStore";
 
 // Page transition animation
 const pageVariants = {
@@ -23,14 +24,15 @@ const statusMapping = {
 const GoalsPage = () => {
 	const navigate = useNavigate();
 	const { fetchGoals, goals, deleteGoal, clearGoals } = useGoalsStore();
+
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const loadGoals = async () => {
+			clearGoals();
 			await fetchGoals();
 			setLoading(false);
 		};
-		clearGoals(); // Avoid showing stale data
 		loadGoals();
 	}, [fetchGoals, clearGoals]);
 

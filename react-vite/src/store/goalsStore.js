@@ -13,8 +13,10 @@ const useGoalsStore = create((set) => ({
 	associatedEntries: [],
 
 	// Fetch all goals with pagination
-	fetchGoals: async (page = 1, perPage = 10) => {
+	//refactor later
+	fetchGoals: async (page = 1, perPage = 1000000) => {
 		const data = await fetchGoals(page, perPage);
+		console.log("Fetched Goals from API:", data.goals);
 		set({ goals: data.goals });
 	},
 
@@ -47,6 +49,7 @@ const useGoalsStore = create((set) => ({
 			const newGoal = await createGoal(goalData);
 			console.log("Goal created in store:", newGoal); // ✅ Add log
 			set((state) => ({ goals: [...state.goals, newGoal] }));
+			await fetchGoals();
 			return newGoal;
 		} catch (error) {
 			console.error("Error in store createGoal function:", error);

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import useGoalsStore from "../../store/goalsStore";
 import { GlowButton } from "../UIComponents/Button";
 import { GlowInput } from "../UIComponents/Input";
+import useEntriesStore from "../../store/entriesStore";
 
 const statusMapping = {
 	in_progress: "In Progress",
@@ -11,7 +12,8 @@ const statusMapping = {
 };
 
 const GoalSetter = ({ entryId, navigate }) => {
-	const { createGoal, fetchGoalsForEntry, goals, clearGoals } = useGoalsStore();
+	const { createGoal, goals, clearGoals } = useGoalsStore();
+	const { fetchGoalsForEntry } = useEntriesStore;
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	const [status, setStatus] = useState("in_progress");
