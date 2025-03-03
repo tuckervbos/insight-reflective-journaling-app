@@ -86,7 +86,7 @@ const SignupFormPage = () => {
 							type="text"
 							value={username}
 							onChange={(e) => setUsername(e.target.value)}
-							className="w-full bg-black border border-violet-500 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:ring-2 focus:ring-violet-600"
+							className="w-full bg-black border border-violet-500 rounded-md px-3 py-2 text-white focus:ring-2 focus:ring-violet-600"
 						/>
 						{errors.username && (
 							<p className="text-red-500 text-xs">{errors.username}</p>

@@ -1,6 +1,12 @@
 import { motion } from "framer-motion";
 
-export const GlowInput = ({ placeholder, value, onChange, className = "" }) => {
+export const GlowInput = ({
+	type = "text",
+	placeholder,
+	value,
+	onChange,
+	className = "",
+}) => {
 	return (
 		<div className={`relative ${className}`}>
 			<motion.div
@@ -10,7 +16,7 @@ export const GlowInput = ({ placeholder, value, onChange, className = "" }) => {
 				transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
 			/>
 			<motion.input
-				type="text"
+				type={type}
 				className="relative z-10 w-full px-4 py-2 bg-black border border-violet-500 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
 				placeholder={placeholder}
 				value={value}
