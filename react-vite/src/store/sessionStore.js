@@ -89,6 +89,7 @@ const useSessionStore = create((set) => ({
 	updatePassword: async (id, oldPassword, newPassword) => {
 		try {
 			console.log("Updating password for user ID:", id);
+			if (!csrfToken) await getCsrfToken();
 			const result = await updatePassword(id, oldPassword, newPassword);
 			if (result) {
 				console.log("Password updated successfully for user ID:", id);
