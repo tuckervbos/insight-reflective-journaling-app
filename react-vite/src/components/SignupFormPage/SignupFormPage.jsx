@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSessionStore from "../../store/sessionStore";
 import { signup } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,11 @@ const SignupFormPage = () => {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [errors, setErrors] = useState({});
+	useEffect(() => {
+		if (Object.keys(errors).length > 0) {
+			console.log("Updated Errors State:", errors);
+		}
+	}, [errors]);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -46,9 +51,12 @@ const SignupFormPage = () => {
 
 		try {
 			const response = await signup({ email, username, password });
+			console.log("Signup Response:", response);
 			if (response.errors) {
+				console.log("Errors received from API:", response.errors); // ✅ Add this line
 				setErrors(response.errors);
 			} else {
+				console.log("Full Errors Object:", errors);
 				setUser(response);
 				navigate("/home");
 			}
@@ -76,8 +84,8 @@ const SignupFormPage = () => {
 							className="w-full bg-black border border-violet-500 rounded-md px-3 py-2 text-white focus:ring-2 focus:ring-violet-600"
 							required
 						/>
-						{errors.email && (
-							<p className="text-red-500 text-xs">{errors.email}</p>
+						{errors?.errors?.email?.length > 0 && (
+							<p className="text-red-500 text-xs">{errors.errors.email[0]}</p>
 						)}
 					</div>
 					<div>
@@ -89,8 +97,10 @@ const SignupFormPage = () => {
 							className="w-full bg-black border border-violet-500 rounded-md px-3 py-2 text-white focus:ring-2 focus:ring-violet-600"
 							required
 						/>
-						{errors.username && (
-							<p className="text-red-500 text-xs">{errors.username}</p>
+						{errors?.errors?.username?.length > 0 && (
+							<p className="text-red-500 text-xs">
+								{errors.errors.username[0]}
+							</p>
 						)}
 					</div>
 					<div>

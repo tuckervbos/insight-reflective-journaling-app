@@ -4,6 +4,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.models import User, db
 from app.forms import LoginForm, SignUpForm
+from sqlalchemy.exc import IntegrityError
 
 auth_routes = Blueprint('auth', __name__)
 
@@ -45,10 +46,7 @@ def login():
     # Get the csrf_token from the request cookie and put it into the
     # form manually to validate_on_submit can be used
     form['csrf_token'].data = request.cookies['csrf_token']
-    print("Cookies:", request.cookies)
-    print("Session:", session)
     if form.validate_on_submit():
-        # Add the user to the session, we are logged in!
         user = User.query.filter(User.email == form.data['email']).first()
         login_user(user)
        
@@ -59,7 +57,6 @@ def login():
 # Sign Up User
 @auth_routes.route('/signup', methods=['POST'])
 def sign_up():
-    # form = SignUpForm()  # Flask-WTF will handle CSRF
     form = SignUpForm(csrf_token=request.cookies.get("csrf_token"))
     form.username.data = request.json.get('username')
     form.email.data = request.json.get('email')
@@ -71,10 +68,21 @@ def sign_up():
             email=form.email.data,
             hashed_password=generate_password_hash(form.password.data),
         )
-        db.session.add(user)
-        db.session.commit()
-        login_user(user)
-        return jsonify(user.to_dict()), 201
+        try:
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            return jsonify(user.to_dict()), 201
+
+        except IntegrityError as e:
+            db.session.rollback()
+
+            if 'username' in str(e.orig):
+                return jsonify({'errors': {'username': 'Username already taken.'}}), 400
+            if 'email' in str(e.orig):
+                return jsonify({'errors': {'email': 'Email already in use.'}}), 400
+
+            return jsonify({'errors': {'general': 'Signup failed. Please try again.'}}), 400
 
     return jsonify({'errors': form.errors}), 400
 
@@ -85,7 +93,7 @@ def logout():
     logout_user()
     return jsonify({'message': 'User logged out successfully'}), 200
 
-
+# Change Password
 @auth_routes.route('/change-password', methods=['POST'])
 @login_required
 def change_password():
@@ -99,4 +107,4 @@ def change_password():
 # Unauthorized route
 @auth_routes.route("/unauthorized")
 def unauthorized():
-    return jsonify({"error": "Unauthorized access"}), 401  # JSON response instead of redirect
+    return jsonify({"error": "Unauthorized access"}), 401 
