@@ -13,7 +13,7 @@ const useGoalsStore = create((set) => ({
 	associatedEntries: [],
 
 	// Fetch all goals with pagination
-	//refactor later
+	//refactor later r
 	fetchGoals: async (page = 1, perPage = 1000000) => {
 		const data = await fetchGoals(page, perPage);
 		console.log("Fetched Goals from API:", data.goals);
