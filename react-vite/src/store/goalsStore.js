@@ -42,8 +42,16 @@ const useGoalsStore = create((set) => ({
 
 	// Create a new goal
 	createGoal: async (goalData) => {
-		const newGoal = await createGoal(goalData);
-		set((state) => ({ goals: [...state.goals, newGoal] }));
+		try {
+			console.log("Attempting to create goal with data:", goalData); // ✅ Add log
+			const newGoal = await createGoal(goalData);
+			console.log("Goal created in store:", newGoal); // ✅ Add log
+			set((state) => ({ goals: [...state.goals, newGoal] }));
+			return newGoal;
+		} catch (error) {
+			console.error("Error in store createGoal function:", error);
+			throw error;
+		}
 	},
 
 	// Update an existing goal

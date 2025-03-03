@@ -23,10 +23,20 @@ const CreateGoalPage = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const newGoal = await createGoal({ title, description, status });
-		if (newGoal && newGoal.id) {
-			clearGoals();
-			navigate(`/goals/${newGoal.id}`);
+		console.log("Save Goal button clicked");
+
+		try {
+			const newGoal = await createGoal({ title, description, status });
+			console.log("New Goal created:", newGoal);
+
+			if (newGoal && newGoal.id) {
+				clearGoals();
+				navigate(`/goals/${newGoal.id}`);
+			} else {
+				console.warn("Failed to create a goal or invalid response.");
+			}
+		} catch (error) {
+			console.error("Error in handleSubmit:", error);
 		}
 	};
 
@@ -49,6 +59,8 @@ const CreateGoalPage = () => {
 						onChange={(e) => setTitle(e.target.value)}
 						placeholder="Goal Title"
 						required
+						minLength="3"
+						maxLength="1000"
 					/>
 					<GlowInput
 						type="text"
@@ -61,6 +73,7 @@ const CreateGoalPage = () => {
 						value={status}
 						onChange={(e) => setStatus(e.target.value)}
 						className="w-full p-2 bg-deepDark text-white border border-border rounded-md shadow-sm"
+						required
 					>
 						<option value="in_progress">In Progress</option>
 						<option value="completed">Completed</option>
