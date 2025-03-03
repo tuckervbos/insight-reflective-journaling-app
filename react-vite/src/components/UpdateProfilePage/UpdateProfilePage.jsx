@@ -18,10 +18,18 @@ const UpdateProfilePage = () => {
 		setLoading(true);
 
 		try {
-			await updateProfile({ username, email });
-			setSuccess("Profile updated successfully!");
-			setTimeout(() => window.location.reload(), 1000); // Reload to reflect changes
+			console.log("Preparing to update profile for user ID:", user?.id);
+			const result = await updateProfile({ id: user?.id, username, email });
+
+			if (result?.success) {
+				console.log("Profile updated successfully for user ID:", user?.id);
+				setSuccess("Profile updated successfully!");
+				setTimeout(() => window.location.reload(), 1000); // Reload to reflect changes
+			} else {
+				throw new Error(result?.errors?.server || "Failed to update profile");
+			}
 		} catch (err) {
+			console.error("Failed to update profile:", err.message);
 			setError("Failed to update profile. Try again.");
 		} finally {
 			setLoading(false);

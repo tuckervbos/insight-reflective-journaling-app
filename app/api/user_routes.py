@@ -70,15 +70,31 @@ def update_user(id):
     if id != current_user.id:
         return jsonify({"message": "Unauthorized"}), 403
 
-    data = request.json
+    data = request.get_json()
     user = User.query.get_or_404(id)
 
-    # Update fields
-    user.username = data.get("username", user.username)
-    user.email = data.get("email", user.email)
+    username = data.get("username")
+    email = data.get("email")
 
-    db.session.commit()
-    return jsonify(user.to_dict()), 200
+    if not username or not email:
+        return jsonify({"error": "Username and Email are required"}), 400
+
+    # Avoiding duplicates for username and email
+    if User.query.filter(User.username == username, User.id != id).first():
+        return jsonify({"error": "Username already exists"}), 400
+
+    if User.query.filter(User.email == email, User.id != id).first():
+        return jsonify({"error": "Email already exists"}), 400
+
+    try:
+        user.username = username
+        user.email = email
+        db.session.commit()
+        return jsonify(user.to_dict()), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating profile: {e}")
+        return jsonify({"error": "Failed to update profile"}), 500
 
 
 @user_routes.route('/<int:id>/password', methods=['PUT'])

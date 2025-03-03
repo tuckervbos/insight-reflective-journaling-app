@@ -6,15 +6,47 @@ import { GlowCard, GlowButton } from "../UIComponents";
 import JournalCalendar from "../Calendar/JournalCalendar";
 
 const UserProfile = () => {
-	const { user, logout } = useSessionStore();
+	const { user, logout, deleteUser } = useSessionStore();
 	const { entries, fetchEntries } = useEntriesStore();
 	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		fetchEntries();
 	}, [fetchEntries]);
 
 	if (!user) return <p>Loading...</p>;
+
+	const handleDeleteAccount = async () => {
+		const isConfirmed = window.confirm(
+			"Are you sure you want to delete your account? This action cannot be undone."
+		);
+		if (!isConfirmed) return;
+
+		setLoading(true);
+
+		try {
+			console.log("Attempting to delete user account with ID:", user.id);
+			const result = await deleteUser(user.id);
+			if (result.success) {
+				console.log("User account deleted successfully.");
+				await logout();
+				navigate("/"); // Redirect to the landing page after deletion
+			} else {
+				alert("Failed to delete account. Please try again.");
+			}
+		} catch (error) {
+			console.error("Error deleting account:", error);
+			alert("An error occurred while deleting your account.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleLogout = async () => {
+		await logout();
+		navigate("/");
+	};
 
 	return (
 		<div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-8 py-12">
@@ -56,10 +88,17 @@ const UserProfile = () => {
 								Change Password
 							</GlowButton>
 							<GlowButton
-								onClick={logout}
+								onClick={handleLogout}
 								className="px-4 py-2 text-sm w-full bg-red-600"
 							>
 								Logout
+							</GlowButton>
+							<GlowButton
+								onClick={handleDeleteAccount}
+								className="w-full bg-red-600"
+								disabled={loading}
+							>
+								{loading ? "Deleting..." : "Delete Profile"}
 							</GlowButton>
 						</div>
 					</GlowCard>
