@@ -28,6 +28,7 @@ const ViewGoalPage = () => {
 		clearGoals,
 		fetchEntriesForGoal,
 		associatedEntries,
+		fetchGoals,
 	} = useGoalsStore();
 
 	const [goal, setGoal] = useState(null);
@@ -91,6 +92,22 @@ const ViewGoalPage = () => {
 			</motion.div>
 		);
 	}
+
+	const handleDeleteGoal = async () => {
+		const isConfirmed = window.confirm(
+			"Are you sure you want to delete this goal?"
+		);
+		if (isConfirmed) {
+			try {
+				console.log("Deleting goal with ID:", goal.id);
+				await deleteGoal(goal.id);
+				await fetchGoals(); // Correctly fetch the updated goals list
+				navigate("/goals");
+			} catch (error) {
+				console.error("Failed to delete goal:", error);
+			}
+		}
+	};
 
 	return (
 		<motion.div
@@ -163,18 +180,7 @@ const ViewGoalPage = () => {
 							<GlowButton onClick={() => navigate(`/goals/${goalId}/edit`)}>
 								Edit Goal
 							</GlowButton>
-							<GlowButton
-								onClick={async () => {
-									const isConfirmed = window.confirm(
-										"Are you sure you want to delete this goal?"
-									);
-									if (isConfirmed) {
-										await deleteGoal(goal.id);
-										await fetchGoals(); // Refresh goals after deletion
-									}
-								}}
-								className="mt-2 bg-red-500"
-							>
+							<GlowButton onClick={handleDeleteGoal} className="bg-red-500">
 								Delete
 							</GlowButton>
 						</div>

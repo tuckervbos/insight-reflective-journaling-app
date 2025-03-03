@@ -3,6 +3,13 @@ import useGoalsStore from "../../store/goalsStore";
 import { GlowButton } from "../UIComponents/Button";
 import { GlowInput } from "../UIComponents/Input";
 
+const statusMapping = {
+	in_progress: "In Progress",
+	completed: "Completed",
+	on_hold: "On Hold",
+	cancelled: "Cancelled",
+};
+
 const GoalSetter = ({ entryId, navigate }) => {
 	const { createGoal, fetchGoalsForEntry, goals, clearGoals } = useGoalsStore();
 	const [title, setTitle] = useState("");
@@ -62,9 +69,9 @@ const GoalSetter = ({ entryId, navigate }) => {
 	};
 
 	return (
-		<div className="p-4 bg-deepDark rounded-md border border-border glow-card">
+		<div className="p-4 bg-deepDark rounded-md mb-6 border-violet-500 border shadow-lg shadow-violet-500/50">
 			<h2 className="text-xl text-violet-500 font-semibold mb-2">
-				Would you like to set a goal?
+				Would you like to set a goal associated with this entry?
 			</h2>
 
 			{!showGoalForm ? (
@@ -80,14 +87,18 @@ const GoalSetter = ({ entryId, navigate }) => {
 						type="text"
 						value={title}
 						onChange={(e) => setTitle(e.target.value)}
-						placeholder="Goal Title"
+						placeholder="Enter a goal title...(3-100 characters)"
 						required
+						minLength="3"
+						maxLength="100"
 					/>
 					<GlowInput
 						type="text"
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
-						placeholder="Goal Description"
+						placeholder="Describe your new goal... at least 10 characters"
+						required
+						minLength="10"
 					/>
 					<select
 						value={status}
@@ -147,7 +158,7 @@ const GoalSetter = ({ entryId, navigate }) => {
 											: "text-red-500"
 									}`}
 								>
-									Status: {goal.status}
+									Status: {statusMapping[goal.status] || "Unknown"}
 								</span>
 							</li>
 						))}

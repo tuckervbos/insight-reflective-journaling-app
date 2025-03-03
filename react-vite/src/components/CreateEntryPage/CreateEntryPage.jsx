@@ -87,11 +87,13 @@ const CreateEntryPage = () => {
 			<form onSubmit={handleSubmit}>
 				<input
 					type="text"
-					placeholder="Title"
+					placeholder="Title (3-100 characters)"
 					value={title}
 					onChange={(e) => setTitle(e.target.value)}
 					className="w-full p-3 border border-violet-500 rounded-md focus:ring focus:ring-violet mb-4 shadow-lg shadow-violet-500/50"
 					required
+					minLength="3"
+					maxLength="100"
 				/>
 
 				<WeatherFetcher
@@ -102,11 +104,12 @@ const CreateEntryPage = () => {
 				/>
 
 				<textarea
-					placeholder="Write your journal entry here..."
+					placeholder="Write your journal entry here...(at least 10 characters)"
 					value={body}
 					onChange={(e) => setBody(e.target.value)}
-					className="w-full h-100 p-3 border border-violet-500 rounded-md focus:ring focus:ring-violet mb-4 shadow-lg shadow-violet-500/50"
+					className="w-full h-100 p-3  mt-4 border border-violet-500 rounded-md focus:ring focus:ring-violet mb-4 shadow-lg shadow-violet-500/50"
 					required
+					minLength="10"
 				></textarea>
 
 				{isSubmitting && <p className="text-yellow-500">Saving entry...</p>}
