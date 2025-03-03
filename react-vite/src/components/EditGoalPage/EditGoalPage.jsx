@@ -16,7 +16,7 @@ const EditGoalPage = () => {
 	const navigate = useNavigate();
 	const {
 		fetchGoalById,
-		// updateGoal,
+		updateGoal,
 		clearGoals,
 		fetchEntriesForGoal,
 		associatedEntries,
@@ -62,7 +62,11 @@ const EditGoalPage = () => {
 	const handleUpdate = async (e) => {
 		e.preventDefault();
 		try {
-			// Navigate to the View Entry Page of the associated entry
+			await updateGoal(goalId, {
+				title,
+				description,
+				status,
+			});
 			if (associatedEntries.length > 0) {
 				const entryId = associatedEntries[0].id; // Assuming we navigate to the first associated entry
 
