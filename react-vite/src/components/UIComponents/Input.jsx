@@ -15,7 +15,6 @@ export const GlowInput = ({ placeholder, value, onChange, className = "" }) => {
 				placeholder={placeholder}
 				value={value}
 				onChange={onChange}
-				required
 			/>
 		</div>
 	);
