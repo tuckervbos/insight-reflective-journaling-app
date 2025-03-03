@@ -7,18 +7,12 @@ function DemoLogin() {
 	const navigate = useNavigate();
 
 	const handleDemoLogin = async () => {
-		try {
-			const response = await fetch("/api/auth/demo", { method: "POST" });
-			const data = await response.json();
+		const response = await fetch("/api/auth/demo", { method: "POST" });
+		const data = await response.json();
 
-			if (response.ok) {
-				setUser(data); // Store user session
-				navigate("/home"); // Redirect to home
-			} else {
-				console.error("Demo login failed:", data.error);
-			}
-		} catch (error) {
-			console.error("Network error:", error);
+		if (response.ok) {
+			setUser(data); // Store user session
+			navigate("/home"); // Redirect to home
 		}
 	};
 

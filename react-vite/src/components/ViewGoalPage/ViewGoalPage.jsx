@@ -38,22 +38,15 @@ const ViewGoalPage = () => {
 	useEffect(() => {
 		const loadGoal = async () => {
 			try {
-				console.log("Clearing existing goals...");
 				clearGoals();
-
-				console.log(`Fetching goal with ID: ${goalId}`);
 				const fetchedGoal = await fetchGoalById(goalId);
-
 				if (fetchedGoal) {
 					setGoal(fetchedGoal);
-
-					console.log(`Fetching entries associated with goal ID: ${goalId}`);
 					await fetchEntriesForGoal(goalId);
 				} else {
 					setError("Goal not found.");
 				}
 			} catch (err) {
-				console.error("Error fetching goal:", err);
 				setError("Goal not found.");
 			} finally {
 				setLoading(false);
@@ -99,12 +92,11 @@ const ViewGoalPage = () => {
 		);
 		if (isConfirmed) {
 			try {
-				console.log("Deleting goal with ID:", goal.id);
 				await deleteGoal(goal.id);
 				await fetchGoals(); // Correctly fetch the updated goals list
 				navigate("/goals");
 			} catch (error) {
-				console.error("Failed to delete goal:", error);
+				setError("Failed to delete goal:", error);
 			}
 		}
 	};

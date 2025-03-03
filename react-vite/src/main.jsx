@@ -22,7 +22,6 @@ const Root = () => {
 				const user = await authenticate();
 				if (user) setUser(user); // update zustand store
 			} catch (error) {
-				console.error("App initialization failed:", error);
 				setAuthError("Failed to initialize app. Please refresh and try again.");
 			} finally {
 				setInitialized(true);

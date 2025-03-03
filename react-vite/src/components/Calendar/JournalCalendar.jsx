@@ -19,16 +19,10 @@ const JournalCalendar = () => {
 	}, [fetchEntries]);
 
 	useEffect(() => {
-		console.log("Entries Loaded in Calendar:", entries);
-	}, [entries]); // This ensures we see if `entries` updates
-	useEffect(() => {
-		console.log(
-			"🚀 Checking Entries for Sentiment:",
-			entries.map((e) => ({
-				date: e.date,
-				sentiment: e.sentiment,
-			}))
-		);
+		entries.map((e) => ({
+			date: e.date,
+			sentiment: e.sentiment,
+		}));
 	}, [entries]);
 
 	const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
@@ -41,8 +35,6 @@ const JournalCalendar = () => {
 			day
 		).toLocaleDateString("en-CA"); // Ensures format "YYYY-MM-DD"
 
-		console.log(`Checking entries for date: ${formattedDate}`);
-
 		// Filter entries for this date
 		const entriesForDate = entries.filter((entry) => {
 			if (!entry || !entry.created_at) return false;
@@ -52,7 +44,6 @@ const JournalCalendar = () => {
 		});
 
 		if (entriesForDate.length === 0) {
-			console.log("❌ No entry found for this date.");
 			return null;
 		}
 
@@ -63,11 +54,6 @@ const JournalCalendar = () => {
 
 		// Get the latest entry
 		const latestEntry = entriesForDate[0];
-
-		console.log(
-			`✅ Latest Entry: ${latestEntry.title} - Sentiment: ${latestEntry.sentiment}`
-		);
-
 		return latestEntry;
 	};
 

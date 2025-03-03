@@ -26,43 +26,32 @@ const GoalSetter = ({ entryId, navigate }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (!entryId) {
-			console.error("Entry ID is not defined.");
 			return;
 		}
 
-		try {
-			const newGoal = await createGoal({
-				title,
-				description,
-				status,
-				entry_id: entryId,
-			});
+		const newGoal = await createGoal({
+			title,
+			description,
+			status,
+			entry_id: entryId,
+		});
 
-			console.log("Creating goal for entry ID:", entryId);
+		// Fetch goals for the specific entry
+		await fetchGoalsForEntry(entryId);
 
-			// Fetch goals for the specific entry
-			await fetchGoalsForEntry(entryId);
+		setTitle("");
+		setDescription("");
+		setStatus("in_progress");
+		setShowGoalForm(false);
 
-			setTitle("");
-			setDescription("");
-			setStatus("in_progress");
-			setShowGoalForm(false);
-
-			if (newGoal && newGoal.id) {
-				console.log(
-					"Goal created successfully, navigating to view entry page..."
-				);
-				clearGoals();
-				navigate(true);
-			}
-		} catch (error) {
-			console.error("Error creating goal or linking to entry:", error);
+		if (newGoal && newGoal.id) {
+			clearGoals();
+			navigate(true);
 		}
 	};
 
 	const handleSkipGoalSetting = () => {
 		if (entryId) {
-			console.log("Skipping goal setting, navigating to view entry page...");
 			clearGoals();
 			navigate(false); // Navigate without setting a goal
 		}

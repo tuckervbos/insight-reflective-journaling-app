@@ -16,13 +16,14 @@ export const getCsrfToken = async () => {
 		csrfToken = data.csrf_token; // store the csrf token globally
 		// document.cookie = `csrf_token=${csrfToken}; path=/`; // optionally set it in cookies
 		sessionStorage.setItem("csrf_token", csrfToken);
-
-		console.log("✅ CSRF Token stored:", csrfToken);
+		return;
 	} catch (error) {
 		console.error("Error fetching CSRF token:", error);
 		throw error;
 	}
 };
+
+export { csrfToken };
 
 // Helper function to retrieve the token from sessionStorage
 export const getStoredCsrfToken = () => {

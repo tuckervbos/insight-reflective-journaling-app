@@ -1,23 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useGoalsStore from "../../store/goalsStore";
-import { GlowCard } from "../UIComponents/Card";
 import { GlowButton } from "../UIComponents/Button";
-
-const statusMapping = {
-	in_progress: "In Progress",
-	completed: "Completed",
-	on_hold: "On Hold",
-	cancelled: "Cancelled",
-};
-
-// Status-based color classes
-const statusColors = {
-	in_progress: "text-yellow-400",
-	on_hold: "text-orange-400",
-	completed: "text-green-400",
-	cancelled: "text-red-500",
-};
 
 const GoalsOverview = () => {
 	const { fetchGoals, goals } = useGoalsStore();

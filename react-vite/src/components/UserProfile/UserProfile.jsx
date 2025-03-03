@@ -26,17 +26,14 @@ const UserProfile = () => {
 		setLoading(true);
 
 		try {
-			console.log("Attempting to delete user account with ID:", user.id);
 			const result = await deleteUser(user.id);
 			if (result.success) {
-				console.log("User account deleted successfully.");
 				await logout();
 				navigate("/"); // Redirect to the landing page after deletion
 			} else {
 				alert("Failed to delete account. Please try again.");
 			}
 		} catch (error) {
-			console.error("Error deleting account:", error);
 			alert("An error occurred while deleting your account.");
 		} finally {
 			setLoading(false);

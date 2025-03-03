@@ -11,7 +11,7 @@ import EntriesOverview from "../EntriesOverview/EntriesOverview";
 function HomePage() {
 	const user = useSessionStore((state) => state.user);
 	const authenticate = useSessionStore((state) => state.authenticate);
-	const { entries, fetchEntries } = useEntriesStore();
+	const { fetchEntries } = useEntriesStore();
 	const navigate = useNavigate();
 
 	useEffect(() => {

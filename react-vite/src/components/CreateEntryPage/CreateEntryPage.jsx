@@ -55,7 +55,6 @@ const CreateEntryPage = () => {
 			}
 		} catch (err) {
 			setError("Failed to save entry.");
-			console.error("Error saving entry:", err);
 		} finally {
 			setIsSubmitting(false);
 		}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useSessionStore from "../../store/sessionStore";
 import { GlowCard, GlowButton, GlowInput } from "../UIComponents";
 
@@ -10,6 +11,7 @@ const UpdateProfilePage = () => {
 	const [error, setError] = useState(null);
 	const [success, setSuccess] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
 
 	const handleUpdateProfile = async (e) => {
 		e.preventDefault();
@@ -37,18 +39,15 @@ const UpdateProfilePage = () => {
 		}
 
 		try {
-			console.log("Preparing to update profile for user ID:", user?.id);
 			const result = await updateProfile({ id: user?.id, username, email });
 
 			if (result?.success) {
-				console.log("Profile updated successfully for user ID:", user?.id);
 				setSuccess("Profile updated successfully!");
-				setTimeout(() => window.location.reload(), 1000);
+				setTimeout(() => navigate("/profile"), 1000);
 			} else {
 				throw new Error(result?.errors?.server || "Failed to update profile");
 			}
 		} catch (err) {
-			console.error("Failed to update profile:", err.message);
 			setError("Failed to update profile. Try again.");
 		} finally {
 			setLoading(false);

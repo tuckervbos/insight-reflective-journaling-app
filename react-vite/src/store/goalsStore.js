@@ -15,90 +15,65 @@ const useGoalsStore = create((set) => ({
 
 	// Fetch all goals with pagination
 	fetchGoals: async (page = 1, perPage = 10) => {
-		try {
-			const data = await fetchGoals(page, perPage);
-			set({ goals: data.goals });
-		} catch (error) {
-			console.error("Error fetching goals:", error);
-		}
+		const data = await fetchGoals(page, perPage);
+		set({ goals: data.goals });
 	},
 
 	// Fetch a specific goal by ID
 	fetchGoalById: async (id) => {
 		try {
 			const goal = await fetchGoalById(id);
-			console.log("Goal returned from API:", goal); // Debug log
 			set((state) => ({
 				goals: state.goals.map((g) => (g.id === id ? goal : g)),
 			}));
-			return goal; // ✅ Ensure the goal is returned properly
+			return goal;
 		} catch (error) {
-			console.error("Error fetching goal by ID:", error);
-			return null; // Return null explicitly on error
+			return null;
 		}
 	},
 
 	fetchEntriesForGoal: async (goalId) => {
 		try {
-			console.log("Fetching entries for goal ID:", goalId);
 			const entries = await fetchEntriesForGoal(goalId);
-			console.log("Fetched entries:", entries);
 			set({ associatedEntries: entries || [] });
 		} catch (error) {
-			console.error("Error fetching entries for goal:", error);
 			set({ associatedEntries: [] });
 		}
 	},
 
 	// Create a new goal
 	createGoal: async (goalData) => {
-		try {
-			const newGoal = await createGoal(goalData);
-			set((state) => ({ goals: [...state.goals, newGoal] }));
-		} catch (error) {
-			console.error("Error creating goal:", error);
-		}
+		const newGoal = await createGoal(goalData);
+		set((state) => ({ goals: [...state.goals, newGoal] }));
 	},
 
 	// Update an existing goal
 	updateGoal: async (id, updatedData) => {
-		try {
-			const updatedGoal = await updateGoal(id, updatedData);
-			set((state) => ({
-				goals: state.goals.map((goal) => (goal.id === id ? updatedGoal : goal)),
-			}));
-		} catch (error) {
-			console.error("Error updating goal:", error);
-		}
+		const updatedGoal = await updateGoal(id, updatedData);
+		set((state) => ({
+			goals: state.goals.map((goal) => (goal.id === id ? updatedGoal : goal)),
+		}));
 	},
 
 	// Delete a goal
 	deleteGoal: async (id) => {
-		try {
-			await deleteGoal(id);
-			set((state) => ({
-				goals: state.goals.filter((goal) => goal.id !== id),
-			}));
-		} catch (error) {
-			console.error("Error deleting goal:", error);
-		}
+		await deleteGoal(id);
+		set((state) => ({
+			goals: state.goals.filter((goal) => goal.id !== id),
+		}));
 	},
 
 	// Fetch goals associated with a specific entry
 	fetchGoalsForEntry: async (entryId) => {
-		try {
-			const entryGoals = await fetchGoalsForEntry(entryId);
-			set((state) => ({
-				goals: [
-					...state.goals.filter(
-						(goal) => !entryGoals.find((eg) => eg.id === goal.id)
-					),
-					...entryGoals,
-				],
-			}));
-		} catch (error) {
-			console.error("Error fetching goals for entry:", error);
-		}
+		const entryGoals = await fetchGoalsForEntry(entryId);
+		set((state) => ({
+			goals: [
+				...state.goals.filter(
+					(goal) => !entryGoals.find((eg) => eg.id === goal.id)
+				),
+				...entryGoals,
+			],
+		}));
 	},
 
 	// Clear all goals

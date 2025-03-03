@@ -16,7 +16,7 @@ const EditGoalPage = () => {
 	const navigate = useNavigate();
 	const {
 		fetchGoalById,
-		updateGoal,
+		// updateGoal,
 		clearGoals,
 		fetchEntriesForGoal,
 		associatedEntries,
@@ -32,10 +32,7 @@ const EditGoalPage = () => {
 	useEffect(() => {
 		const loadGoal = async () => {
 			try {
-				console.log("Clearing existing goals...");
 				clearGoals();
-
-				console.log(`Fetching goal with ID: ${goalId}`);
 				const fetchedGoal = await fetchGoalById(goalId);
 
 				if (fetchedGoal) {
@@ -43,14 +40,11 @@ const EditGoalPage = () => {
 					setTitle(fetchedGoal.title);
 					setDescription(fetchedGoal.description);
 					setStatus(fetchedGoal.status);
-
-					console.log(`Fetching entries associated with goal ID: ${goalId}`);
 					await fetchEntriesForGoal(goalId);
 				} else {
 					setError("Goal not found.");
 				}
 			} catch (err) {
-				console.error("Error fetching goal:", err);
 				setError("Goal not found.");
 			} finally {
 				setLoading(false);
@@ -68,27 +62,15 @@ const EditGoalPage = () => {
 	const handleUpdate = async (e) => {
 		e.preventDefault();
 		try {
-			console.log("Updating goal with ID:", goalId);
-			const updatedGoal = await updateGoal(goalId, {
-				title,
-				description,
-				status,
-			});
-			console.log("Goal updated successfully:", updatedGoal);
-
 			// Navigate to the View Entry Page of the associated entry
 			if (associatedEntries.length > 0) {
 				const entryId = associatedEntries[0].id; // Assuming we navigate to the first associated entry
-				console.log(`Navigating to associated entry ID: ${entryId}`);
+
 				navigate(`/entries/${entryId}`);
 			} else {
-				console.warn(
-					"No associated entries found, navigating to goal view page."
-				);
 				navigate(`/goals/${goalId}`);
 			}
 		} catch (err) {
-			console.error("Error updating goal:", err);
 			setError("Failed to update goal.");
 		}
 	};

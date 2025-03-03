@@ -1,5 +1,5 @@
 import useSessionStore from "../../store/sessionStore";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ProfileButton from "./ProfileButton";
 import logo from "../../..//src/assets/logo-large-flat.png";
 import { motion } from "framer-motion";
@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 function Navigation() {
 	const user = useSessionStore((state) => state.user);
 	const navigate = useNavigate();
-	const location = useLocation();
 
 	const glowVariants = {
 		initial: {

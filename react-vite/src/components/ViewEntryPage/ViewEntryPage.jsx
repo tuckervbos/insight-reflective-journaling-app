@@ -43,7 +43,6 @@ const ViewEntryPage = () => {
 					await fetchGoalsForEntry(entryId);
 				}
 			} catch (err) {
-				console.error("Error loading entry:", err);
 				setError("Entry not found.");
 			}
 		};

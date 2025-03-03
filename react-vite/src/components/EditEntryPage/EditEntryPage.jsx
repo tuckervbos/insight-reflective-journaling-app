@@ -25,13 +25,9 @@ const EditEntryPage = () => {
 			let existingEntry = entries.find((e) => e.id === parseInt(entryId, 10));
 
 			if (!existingEntry && entryId) {
-				try {
-					existingEntry = await fetchEntryById(entryId);
-					if (existingEntry) {
-						setEntries([existingEntry]);
-					}
-				} catch (error) {
-					console.error("Failed to fetch entry:", error);
+				existingEntry = await fetchEntryById(entryId);
+				if (existingEntry) {
+					setEntries([existingEntry]);
 				}
 			}
 

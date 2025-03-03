@@ -8,6 +8,7 @@ import {
 	updatePassword,
 	deleteUser,
 } from "../utils/api";
+import { csrfToken, getCsrfToken } from "../utils/api";
 
 const useSessionStore = create((set) => ({
 	user: null,
@@ -34,7 +35,6 @@ const useSessionStore = create((set) => ({
 			}
 			return { success: false, errors: response.errors };
 		} catch (error) {
-			console.error("Login error:", error);
 			return { success: false, errors: { server: "An error occurred." } };
 		}
 	},
@@ -48,7 +48,6 @@ const useSessionStore = create((set) => ({
 			}
 			return { success: false, errors: response.errors };
 		} catch (error) {
-			console.error("Signup error:", error);
 			return { success: false, errors: { server: "An error occurred." } };
 		}
 	},
@@ -64,23 +63,19 @@ const useSessionStore = create((set) => ({
 	// Update user profile
 	updateProfile: async (updatedData) => {
 		try {
-			console.log("Preparing to update user profile:", updatedData);
 			if (!updatedData) throw new Error("No updated data provided");
 
 			const user = await updateUser(updatedData.id, updatedData);
 			if (user) {
 				set({ user });
-				console.log("User profile updated successfully:", user);
 				return { success: true };
 			} else {
-				console.error("Failed to update user profile.");
 				return {
 					success: false,
 					errors: { server: "Failed to update user profile." },
 				};
 			}
 		} catch (error) {
-			console.error("Error updating profile:", error);
 			return { success: false, errors: { server: "An error occurred." } };
 		}
 	},
@@ -88,17 +83,14 @@ const useSessionStore = create((set) => ({
 	// Update user password
 	updatePassword: async (id, oldPassword, newPassword) => {
 		try {
-			console.log("Updating password for user ID:", id);
 			if (!csrfToken) await getCsrfToken();
 			const result = await updatePassword(id, oldPassword, newPassword);
 			if (result) {
-				console.log("Password updated successfully for user ID:", id);
 				return { success: true };
 			} else {
 				throw new Error("Failed to update password.");
 			}
 		} catch (error) {
-			console.error("Error updating password:", error);
 			return {
 				success: false,
 				errors: { server: "Failed to update password." },
@@ -109,13 +101,10 @@ const useSessionStore = create((set) => ({
 	// Delete user account
 	deleteUser: async (id) => {
 		try {
-			console.log("Deleting user account with ID:", id);
 			await deleteUser(id);
-			set({ user: null }); // Clear the user from the session store
-			console.log("User account deleted successfully.");
+			set({ user: null });
 			return { success: true };
 		} catch (error) {
-			console.error("Error deleting user:", error);
 			return {
 				success: false,
 				errors: { server: "Failed to delete user account." },

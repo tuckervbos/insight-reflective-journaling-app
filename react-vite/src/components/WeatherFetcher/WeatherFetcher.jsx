@@ -16,13 +16,11 @@ const WeatherFetcher = ({ onWeatherFetched = () => {} }) => {
 			const response = await fetch("/api/entries/moon-phase");
 			if (!response.ok) throw new Error("Moon phase data unavailable.");
 			const data = await response.json();
-			console.log("🌙 Moon Phase API Response:", data);
 			const phase = data.phase || "Unknown";
 			setMoonPhase(phase);
 			return phase;
 		} catch (err) {
 			setMoonPhase("Unknown");
-			console.error("Failed to fetch moon phase:", err);
 			return "Unknown";
 		}
 	};
@@ -38,7 +36,6 @@ const WeatherFetcher = ({ onWeatherFetched = () => {} }) => {
 			if (!response.ok) throw new Error("Invalid response from weather API.");
 
 			const data = await response.json();
-			console.log("Weather API Response:", data); // Debugging log
 
 			const moonPhaseData = await fetchMoonPhase();
 
@@ -51,7 +48,6 @@ const WeatherFetcher = ({ onWeatherFetched = () => {} }) => {
 			const country = data?.country || "Unknown Country";
 
 			setWeather({ weatherDescription, temperature, city, country });
-			console.log("Final Moon Phase Data:", moonPhaseData); // Debugging
 			setError(null);
 			setShowHeader(false);
 			onWeatherFetched(
@@ -62,7 +58,6 @@ const WeatherFetcher = ({ onWeatherFetched = () => {} }) => {
 			setError(
 				"Failed to fetch weather data. Try entering your city manually."
 			);
-			console.error(err);
 		} finally {
 			setLoading(false);
 		}

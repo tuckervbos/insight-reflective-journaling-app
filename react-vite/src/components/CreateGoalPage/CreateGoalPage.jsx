@@ -23,17 +23,10 @@ const CreateGoalPage = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		try {
-			const newGoal = await createGoal({ title, description, status });
-			if (newGoal && newGoal.id) {
-				clearGoals();
-				console.log(
-					"Goal created successfully, navigating to view goal page..."
-				);
-				navigate(`/goals/${newGoal.id}`);
-			}
-		} catch (error) {
-			console.error("Error creating goal:", error);
+		const newGoal = await createGoal({ title, description, status });
+		if (newGoal && newGoal.id) {
+			clearGoals();
+			navigate(`/goals/${newGoal.id}`);
 		}
 	};
 
@@ -62,6 +55,7 @@ const CreateGoalPage = () => {
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
 						placeholder="Goal Description"
+						required
 					/>
 					<select
 						value={status}

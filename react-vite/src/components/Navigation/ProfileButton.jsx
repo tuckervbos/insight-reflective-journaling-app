@@ -38,16 +38,13 @@ function ProfileButton() {
 			const errors = await logout(); // Call API to log out
 			if (errors && errors.message) {
 				setErrorMessage(errors.message || "Logout failed.");
-				console.error("Logout API returned errors:", errors);
 			} else {
-				console.log("Logout successful");
 				setUser(null); // Clear session store
 				setShowMenu(false); // Close dropdown
 				navigate("/"); // Redirect to landing page
 			}
 		} catch (error) {
 			setErrorMessage("An unexpected error occurred.");
-			console.error("Logout failed:", error);
 		}
 	};
 
