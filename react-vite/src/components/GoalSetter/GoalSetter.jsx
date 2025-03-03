@@ -64,7 +64,7 @@ const GoalSetter = ({ entryId, navigate }) => {
 	return (
 		<div className="p-4 bg-deepDark rounded-md border border-border glow-card">
 			<h2 className="text-xl text-violet-500 font-semibold mb-2">
-				Set Goals for this Entry
+				Would you like to set a goal?
 			</h2>
 
 			{!showGoalForm ? (

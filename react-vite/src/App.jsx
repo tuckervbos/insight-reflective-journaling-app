@@ -15,6 +15,10 @@ import EditEntryPage from "./components/EditEntryPage/EditEntryPage";
 import ViewEntryPage from "./components/ViewEntryPage/ViewEntryPage";
 import { AnimatePresence } from "motion/react";
 import UpdateProfilePage from "./components/UpdateProfilePage/UpdateProfilePage";
+import CreateGoalPage from "./components/CreateGoalPage/CreateGoalPage";
+import GoalsPage from "./components/GoalsPage/GoalsPage";
+import ViewGoalPage from "./components/ViewGoalPage/ViewGoalPage";
+import EditGoalPage from "./components/EditGoalPage/EditGoalPage";
 
 const App = () => {
 	const { user, authenticate } = useSessionStore();
@@ -53,6 +57,10 @@ const App = () => {
 									path="/entries/:entryId/edit"
 									element={<EditEntryPage />}
 								/>
+								<Route path="/goals" element={<GoalsPage />} />
+								<Route path="/goals/new" element={<CreateGoalPage />} />
+								<Route path="/goals/:goalId" element={<ViewGoalPage />} />
+								<Route path="/goals/:goalId/edit" element={<EditGoalPage />} />
 							</>
 						)}
 					</Routes>

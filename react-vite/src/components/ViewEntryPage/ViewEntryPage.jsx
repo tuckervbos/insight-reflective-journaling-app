@@ -13,6 +13,13 @@ const pageVariants = {
 	exit: { opacity: 0, y: -50, transition: { duration: 0.3 } },
 };
 
+const statusMapping = {
+	in_progress: "In Progress",
+	completed: "Completed",
+	on_hold: "On Hold",
+	cancelled: "Cancelled",
+};
+
 const ViewEntryPage = () => {
 	const { entryId } = useParams();
 	const navigate = useNavigate();
@@ -111,26 +118,31 @@ const ViewEntryPage = () => {
 					) : (
 						<ul className="space-y-2">
 							{goals.map((goal) => (
-								<li
-									key={goal.id}
-									className="p-4 bg-deepDark border border-border rounded-md"
-								>
-									<h3 className="text-white font-semibold">{goal.title}</h3>
-									<p className="text-gray-400">{goal.description}</p>
-									<span
-										className={`text-sm ${
-											goal.status === "completed"
-												? "text-green-400"
-												: goal.status === "in_progress"
-												? "text-yellow-400"
-												: goal.status === "on_hold"
-												? "text-orange-400"
-												: "text-red-500"
-										}`}
-									>
-										Status: {goal.status}
-									</span>
-								</li>
+								<GlowCard key={goal.id} className="bg-deepDark rounded-md flex">
+									<div className="flex-grow">
+										<h3 className="text-white font-semibold">{goal.title}</h3>
+										<p className="text-gray-400">{goal.description}</p>
+										<span
+											className={`text-sm ${
+												goal.status === "completed"
+													? "text-green-400"
+													: goal.status === "in_progress"
+													? "text-yellow-400"
+													: goal.status === "on_hold"
+													? "text-orange-400"
+													: "text-red-500"
+											}`}
+										>
+											Status: {statusMapping[goal.status] || "Unknown"}
+										</span>
+									</div>
+
+									<div className="ml-auto mt-5">
+										<GlowButton onClick={() => navigate(`/goals/${goal.id}`)}>
+											View Goal
+										</GlowButton>
+									</div>
+								</GlowCard>
 							))}
 						</ul>
 					)}

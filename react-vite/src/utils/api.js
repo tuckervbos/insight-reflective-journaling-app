@@ -374,6 +374,9 @@ export const fetchGoals = async (page = 1, perPage = 10) => {
 export const fetchGoalById = async (id) => {
 	try {
 		if (!csrfToken) await getCsrfToken();
+		console.log("Making API call to:", `/api/goals/${id}`);
+		console.log("Using CSRF Token:", csrfToken);
+
 		const response = await fetch(`/api/goals/${id}`, {
 			method: "GET",
 			headers: {
@@ -382,11 +385,21 @@ export const fetchGoalById = async (id) => {
 			},
 			credentials: "include",
 		});
-		if (!response.ok) throw new Error("Failed to fetch goal.");
-		return await response.json();
+
+		console.log("API Response Status:", response.status);
+
+		if (!response.ok) {
+			console.error("Failed to fetch goal. Status:", response.status);
+			console.error("Response Text:", await response.text());
+			return null; // Return null explicitly if the fetch fails
+		}
+
+		const data = await response.json();
+		console.log("Fetched Goal Data in API:", data); // Verify data is being parsed correctly
+		return data; // Ensure the data is returned correctly
 	} catch (error) {
 		console.error("Error fetching goal:", error);
-		throw error;
+		return null; // Explicitly return null on error
 	}
 };
 
@@ -471,6 +484,26 @@ export const fetchGoalsForEntry = async (entryId) => {
 	}
 };
 
+// Fetch entries associated with a specific goal
+export const fetchEntriesForGoal = async (goalId) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/entries/goal/${goalId}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to fetch entries for goal.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching entries for goal:", error);
+		return [];
+	}
+};
+
 // Export all functions
 export default {
 	getCsrfToken,
@@ -494,4 +527,5 @@ export default {
 	updateGoal,
 	deleteGoal,
 	fetchGoalsForEntry,
+	fetchEntriesForGoal,
 };

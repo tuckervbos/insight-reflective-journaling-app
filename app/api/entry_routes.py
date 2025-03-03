@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from app.models import Entry, db
+from app.models import Entry, db, EntryGoal
 from flask_login import login_required, current_user
 from datetime import datetime
 from time import time
@@ -173,32 +173,17 @@ def delete_entry(id):
     db.session.commit()
     return jsonify({'message': 'Entry deleted successfully'})
 
-
-# @entry_routes.route("/entries", methods=["POST"])
-# @login_required
-# def create_entry():
-#     """Create a new journal entry"""
-#     data = request.json
-#     title = data.get("title", "").strip()
-#     body = data.get("body", "").strip()
-
-#     if not title or not body:
-#         return jsonify({"error": "Title and body are required."}), 400
-
-#     weather = get_weather()  # Fetch weather data
-#     moon_phase = get_moon_phase()  # Fetch moon phase
-
-#     new_entry = Entry(
-#         user_id=current_user.id,
-#         title=title,
-#         body=body,
-#         weather=weather,
-#         moon_phase=moon_phase,
-#         sentiment=None,  # Placeholder for AI sentiment
-#         created_at=datetime.utcnow(),
-#     )
-
-#     db.session.add(new_entry)
-#     db.session.commit()
+@entry_routes.route('/goal/<int:goal_id>', methods=['GET'])
+@login_required
+def get_entries_for_goal(goal_id):
+    """Fetch entries associated with a specific goal."""
+    entry_goals = EntryGoal.query.filter_by(goal_id=goal_id).all()
+    entries = [entry_goal.entry.to_dict() for entry_goal in entry_goals]
     
-#     return jsonify(new_entry.to_dict()), 201
+    print(f"Fetching entries for goal ID: {goal_id}")
+    print(f"Found associated entries: {entries}")
+
+    if not entries:
+        return jsonify({"message": "No entries found for this goal."}), 404
+    
+    return jsonify(entries), 200

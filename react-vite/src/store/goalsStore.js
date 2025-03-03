@@ -6,10 +6,12 @@ import {
 	updateGoal,
 	deleteGoal,
 	fetchGoalsForEntry,
+	fetchEntriesForGoal,
 } from "../utils/api";
 
 const useGoalsStore = create((set) => ({
 	goals: [],
+	associatedEntries: [],
 
 	// Fetch all goals with pagination
 	fetchGoals: async (page = 1, perPage = 10) => {
@@ -25,11 +27,26 @@ const useGoalsStore = create((set) => ({
 	fetchGoalById: async (id) => {
 		try {
 			const goal = await fetchGoalById(id);
+			console.log("Goal returned from API:", goal); // Debug log
 			set((state) => ({
 				goals: state.goals.map((g) => (g.id === id ? goal : g)),
 			}));
+			return goal; // ✅ Ensure the goal is returned properly
 		} catch (error) {
 			console.error("Error fetching goal by ID:", error);
+			return null; // Return null explicitly on error
+		}
+	},
+
+	fetchEntriesForGoal: async (goalId) => {
+		try {
+			console.log("Fetching entries for goal ID:", goalId);
+			const entries = await fetchEntriesForGoal(goalId);
+			console.log("Fetched entries:", entries);
+			set({ associatedEntries: entries || [] });
+		} catch (error) {
+			console.error("Error fetching entries for goal:", error);
+			set({ associatedEntries: [] });
 		}
 	},
 
@@ -83,8 +100,9 @@ const useGoalsStore = create((set) => ({
 			console.error("Error fetching goals for entry:", error);
 		}
 	},
+
 	// Clear all goals
-	clearGoals: () => set({ goals: [] }),
+	clearGoals: () => set({ goals: [], associatedEntries: [] }),
 }));
 
 export default useGoalsStore;

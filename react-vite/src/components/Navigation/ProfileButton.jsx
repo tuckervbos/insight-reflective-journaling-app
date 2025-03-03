@@ -64,7 +64,7 @@ function ProfileButton() {
 					{user ? (
 						<>
 							<li className="dropdown-user-info text-right pb-1 text-violet-300">
-								hi, {user.username}
+								Hi, {user.username}
 							</li>
 							<li className="dropdown-user-info text-right pb-2 border-b-2 border-violet-500  text-violet-300">
 								{user.email}
