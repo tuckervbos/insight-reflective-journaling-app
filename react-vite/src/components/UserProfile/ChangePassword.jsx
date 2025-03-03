@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { updatePassword } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
-import { GlowCard, GlowButton } from "../UIComponents";
+import { GlowCard, GlowButton, GlowInput } from "../UIComponents";
 
 const ChangePassword = ({ userId }) => {
 	const [oldPassword, setOldPassword] = useState("");
@@ -16,8 +16,24 @@ const ChangePassword = ({ userId }) => {
 		setError(null);
 		setSuccess(null);
 
+		if (!oldPassword.trim()) {
+			setError("Current password is required.");
+			return;
+		}
+		if (!newPassword.trim()) {
+			setError("New password is required.");
+			return;
+		}
+		if (!confirmPassword.trim()) {
+			setError("Please confirm your new password.");
+			return;
+		}
 		if (newPassword !== confirmPassword) {
 			setError("New passwords do not match.");
+			return;
+		}
+		if (newPassword.length < 6) {
+			setError("New password must be at least 6 characters.");
 			return;
 		}
 
@@ -46,7 +62,7 @@ const ChangePassword = ({ userId }) => {
 						<label className="block text-sm text-gray-400">
 							Current Password
 						</label>
-						<input
+						<GlowInput
 							type="password"
 							value={oldPassword}
 							onChange={(e) => setOldPassword(e.target.value)}
@@ -56,7 +72,7 @@ const ChangePassword = ({ userId }) => {
 					</div>
 					<div>
 						<label className="block text-sm text-gray-400">New Password</label>
-						<input
+						<GlowInput
 							type="password"
 							value={newPassword}
 							onChange={(e) => setNewPassword(e.target.value)}
@@ -68,7 +84,7 @@ const ChangePassword = ({ userId }) => {
 						<label className="block text-sm text-gray-400">
 							Confirm New Password
 						</label>
-						<input
+						<GlowInput
 							type="password"
 							value={confirmPassword}
 							onChange={(e) => setConfirmPassword(e.target.value)}

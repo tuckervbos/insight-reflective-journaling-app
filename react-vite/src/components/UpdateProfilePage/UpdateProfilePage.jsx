@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useSessionStore from "../../store/sessionStore";
-import { GlowCard, GlowButton } from "../UIComponents";
+import { GlowCard, GlowButton, GlowInput } from "../UIComponents";
 
 const UpdateProfilePage = () => {
 	const user = useSessionStore((state) => state.user);
@@ -17,6 +17,25 @@ const UpdateProfilePage = () => {
 		setSuccess(null);
 		setLoading(true);
 
+		if (!username.trim()) {
+			setError("Username is required.");
+			setLoading(false);
+			return;
+		}
+
+		if (!email.trim()) {
+			setError("Email is required.");
+			setLoading(false);
+			return;
+		}
+
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			setError("Please enter a valid email address.");
+			setLoading(false);
+			return;
+		}
+
 		try {
 			console.log("Preparing to update profile for user ID:", user?.id);
 			const result = await updateProfile({ id: user?.id, username, email });
@@ -24,7 +43,7 @@ const UpdateProfilePage = () => {
 			if (result?.success) {
 				console.log("Profile updated successfully for user ID:", user?.id);
 				setSuccess("Profile updated successfully!");
-				setTimeout(() => window.location.reload(), 1000); // Reload to reflect changes
+				setTimeout(() => window.location.reload(), 1000);
 			} else {
 				throw new Error(result?.errors?.server || "Failed to update profile");
 			}
@@ -45,7 +64,7 @@ const UpdateProfilePage = () => {
 				<form onSubmit={handleUpdateProfile} className="space-y-4">
 					<div>
 						<label className="block text-sm text-gray-400">Username</label>
-						<input
+						<GlowInput
 							type="text"
 							value={username}
 							onChange={(e) => setUsername(e.target.value)}
@@ -55,7 +74,7 @@ const UpdateProfilePage = () => {
 					</div>
 					<div>
 						<label className="block text-sm text-gray-400">Email</label>
-						<input
+						<GlowInput
 							type="email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
