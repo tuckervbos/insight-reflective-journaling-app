@@ -45,13 +45,12 @@ const CreateEntryPage = () => {
 				if (newEntry?.id) {
 					clearGoals();
 					setEntryId(newEntry.id);
-					setShowGoalSetter(true); // Show goal setter only when entry is created
+					setShowGoalSetter(true); // Ensure goal setter is shown
 				} else {
 					setError("Failed to create a new entry.");
 				}
 			} else {
 				await updateEntry(entryId, entryData);
-				console.log("Navigating to entry ID:", entryId);
 				navigate(`/entries/${entryId}`);
 			}
 		} catch (err) {
@@ -112,20 +111,23 @@ const CreateEntryPage = () => {
 
 				{isSubmitting && <p className="text-yellow-500">Saving entry...</p>}
 
-				<div className="mt-4 flex justify-end">
-					<GlowButton type="submit">Save Entry</GlowButton>
-				</div>
+				{/* Initial Save Entry button before goal setting */}
+				{!entryId && (
+					<div className="mt-4 flex justify-end">
+						<GlowButton type="submit">Save Entry</GlowButton>
+					</div>
+				)}
 			</form>
 
 			{/* Render GoalSetter only after entry is created */}
 			{entryId && showGoalSetter && (
-				<GoalSetter entryId={entryId} navigate={handleGoalSaved} />
-			)}
+				<div className="mt-6">
+					<GoalSetter entryId={entryId} navigate={handleGoalSaved} />
 
-			{/* Option to skip goal setting and go to entry page */}
-			{entryId && !showGoalSetter && (
-				<div className="mt-4 flex justify-end">
-					<GlowButton onClick={handleSkipGoalSetting}>View Entry</GlowButton>
+					{/* Always render the Save Entry button after GoalSetter */}
+					<div className="mt-4 flex justify-end">
+						<GlowButton onClick={handleSkipGoalSetting}>Save Entry</GlowButton>
+					</div>
 				</div>
 			)}
 		</div>

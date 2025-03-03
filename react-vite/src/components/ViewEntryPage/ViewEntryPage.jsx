@@ -5,6 +5,7 @@ import { GlowButton } from "../UIComponents/Button";
 import { GlowCard } from "../UIComponents/Card";
 import { motion } from "framer-motion";
 import useGoalsStore from "../../store/goalsStore";
+import useEntriesStore from "../../store/entriesStore";
 
 // Page transition animation
 const pageVariants = {
@@ -27,6 +28,8 @@ const ViewEntryPage = () => {
 	const [error, setError] = useState(null);
 
 	const { fetchGoalsForEntry, goals, clearGoals } = useGoalsStore();
+
+	const { deleteEntry } = useEntriesStore();
 
 	useEffect(() => {
 		const loadEntry = async () => {
@@ -161,16 +164,25 @@ const ViewEntryPage = () => {
 						<GlowButton
 							onClick={() => {
 								if (entryId) {
-									console.log("Navigating to edit entry:", entryId); // Debug log
 									navigate(`/entries/${entryId}/edit`);
-								} else {
-									console.error(
-										"Entry ID is undefined, cannot navigate to edit page."
-									);
 								}
 							}}
 						>
 							Edit Entry
+						</GlowButton>
+						<GlowButton
+							onClick={async () => {
+								const isConfirmed = window.confirm(
+									"Are you sure you want to delete this entry?"
+								);
+								if (isConfirmed) {
+									await deleteEntry(entryId);
+									navigate("/entries");
+								}
+							}}
+							className="bg-red-500"
+						>
+							Delete Entry
 						</GlowButton>
 					</div>
 				</div>

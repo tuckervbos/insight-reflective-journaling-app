@@ -15,7 +15,7 @@ const pageVariants = {
 const EditEntryPage = () => {
 	const { entryId } = useParams();
 	const navigate = useNavigate();
-	const { entries, updateEntry, fetchEntryById, setEntries } =
+	const { entries, updateEntry, fetchEntryById, setEntries, deleteEntry } =
 		useEntriesStore();
 
 	const [editedEntry, setEditedEntry] = useState({ title: "", body: "" });
@@ -113,12 +113,28 @@ const EditEntryPage = () => {
 
 						<div className="mt-4 flex justify-between">
 							<GlowButton type="submit">Save Changes</GlowButton>
-							<GlowButton
-								onClick={() => navigate(`/entries/${entryId}`)}
-								className="bg-gray-600"
-							>
-								Cancel
-							</GlowButton>
+							<div className="flex space-x-4">
+								<GlowButton
+									onClick={() => navigate(`/entries/${entryId}`)}
+									className="bg-gray-600"
+								>
+									Cancel
+								</GlowButton>
+								<GlowButton
+									onClick={async () => {
+										const isConfirmed = window.confirm(
+											"Are you sure you want to delete this entry?"
+										);
+										if (isConfirmed) {
+											await deleteEntry(entryId);
+											navigate("/entries", { replace: true });
+										}
+									}}
+									className="bg-red-500"
+								>
+									Delete Entry
+								</GlowButton>
+							</div>
 						</div>
 					</div>
 				</form>

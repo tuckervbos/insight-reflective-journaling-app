@@ -38,6 +38,10 @@ const GoalsPage = () => {
 		return <p className="text-center text-gray-400">Loading goals...</p>;
 	}
 
+	const sortedGoals = [...goals].sort(
+		(a, b) => new Date(b.created_at) - new Date(a.created_at)
+	);
+
 	return (
 		<motion.div
 			className="container mx-auto py-12 px-6"
@@ -50,13 +54,13 @@ const GoalsPage = () => {
 				<h1 className="text-3xl font-semibold text-violet-300 mb-4">
 					Your Goals
 				</h1>
-				{goals.length === 0 ? (
+				{sortedGoals.length === 0 ? (
 					<p className="text-gray-500">
 						No goals found. Start setting new goals!
 					</p>
 				) : (
 					<ul className="space-y-4">
-						{goals.map((goal) => (
+						{sortedGoals.map((goal) => (
 							<GlowCard
 								key={goal.id}
 								className="p-4 bg-deepDark rounded-md border border-border flex justify-between items-center"
@@ -90,7 +94,7 @@ const GoalsPage = () => {
 									</GlowButton>
 									<GlowButton
 										onClick={() => navigate(`/goals/${goal.id}/edit`)}
-										className="mt-2 bg-background" //
+										className="mt-2"
 									>
 										Edit
 									</GlowButton>
