@@ -53,7 +53,7 @@ const GoalSetter = ({ entryId, navigate }) => {
 	const handleSkipGoalSetting = () => {
 		if (entryId) {
 			clearGoals();
-			navigate(false); // Navigate without setting a goal
+			navigate(`/entries/${entryId}`);
 		}
 	};
 

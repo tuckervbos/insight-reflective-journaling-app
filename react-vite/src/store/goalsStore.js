@@ -5,7 +5,6 @@ import {
 	createGoal,
 	updateGoal,
 	deleteGoal,
-	fetchGoalsForEntry,
 	fetchEntriesForGoal,
 } from "../utils/api";
 
@@ -60,19 +59,6 @@ const useGoalsStore = create((set) => ({
 		await deleteGoal(id);
 		set((state) => ({
 			goals: state.goals.filter((goal) => goal.id !== id),
-		}));
-	},
-
-	// Fetch goals associated with a specific entry
-	fetchGoalsForEntry: async (entryId) => {
-		const entryGoals = await fetchGoalsForEntry(entryId);
-		set((state) => ({
-			goals: [
-				...state.goals.filter(
-					(goal) => !entryGoals.find((eg) => eg.id === goal.id)
-				),
-				...entryGoals,
-			],
 		}));
 	},
 

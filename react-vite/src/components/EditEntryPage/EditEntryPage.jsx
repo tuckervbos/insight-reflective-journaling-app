@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useEntriesStore from "../../store/entriesStore";
+import useGoalsStore from "../../store/goalsStore";
 import { GlowButton } from "../UIComponents/Button";
 import { GlowCard } from "../UIComponents/Card";
 import { motion } from "framer-motion";
@@ -15,10 +16,23 @@ const pageVariants = {
 const EditEntryPage = () => {
 	const { entryId } = useParams();
 	const navigate = useNavigate();
-	const { entries, updateEntry, fetchEntryById, setEntries, deleteEntry } =
-		useEntriesStore();
+	const {
+		entries,
+		updateEntry,
+		fetchEntryById,
+		setEntries,
+		deleteEntry,
+		fetchGoalsForEntry,
+		associatedGoals,
+	} = useEntriesStore();
 
 	const [editedEntry, setEditedEntry] = useState({ title: "", body: "" });
+
+	useEffect(() => {
+		if (entryId) {
+			fetchGoalsForEntry(entryId);
+		}
+	}, [entryId, fetchGoalsForEntry]);
 
 	useEffect(() => {
 		const loadEntry = async () => {
@@ -106,6 +120,35 @@ const EditEntryPage = () => {
 							rows={6}
 							className="bg-background text-white border border-violet-500 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
 						/>
+
+						<div className="mt-8">
+							<h2 className="text-2xl font-semibold text-violet-300 mb-4">
+								Associated Goals
+							</h2>
+							{(associatedGoals?.length ?? 0) === 0 ? (
+								<p className="text-gray-500">
+									No goals associated with this entry.
+								</p>
+							) : (
+								<ul className="space-y-2">
+									{associatedGoals.map((goal) => (
+										<li
+											key={goal.id}
+											className="p-4 bg-deepDark border border-border rounded-md"
+										>
+											<h3 className="text-white font-semibold">{goal.title}</h3>
+											<p className="text-gray-400">{goal.description}</p>
+											<GlowButton
+												onClick={() => navigate(`/goals/${goal.id}`)}
+												className="mt-2 ml-auto"
+											>
+												View Goal
+											</GlowButton>
+										</li>
+									))}
+								</ul>
+							)}
+						</div>
 
 						<div className="mt-4 flex justify-between">
 							<GlowButton type="submit">Save Changes</GlowButton>

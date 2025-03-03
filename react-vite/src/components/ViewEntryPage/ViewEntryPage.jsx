@@ -27,7 +27,8 @@ const ViewEntryPage = () => {
 	const [entry, setEntry] = useState(null);
 	const [error, setError] = useState(null);
 
-	const { fetchGoalsForEntry, goals, clearGoals } = useGoalsStore();
+	const { fetchGoalsForEntry, associatedGoals, clearAssociatedGoals } =
+		useEntriesStore();
 
 	const { deleteEntry } = useEntriesStore();
 
@@ -39,7 +40,7 @@ const ViewEntryPage = () => {
 
 				// Fetch goals associated with the entry
 				if (entryId) {
-					clearGoals();
+					clearAssociatedGoals();
 					await fetchGoalsForEntry(entryId);
 				}
 			} catch (err) {
@@ -50,7 +51,7 @@ const ViewEntryPage = () => {
 		if (entryId) {
 			loadEntry();
 		}
-	}, [entryId, fetchGoalsForEntry, clearGoals]);
+	}, [entryId, fetchGoalsForEntry, clearAssociatedGoals]);
 
 	if (error) {
 		return (
@@ -113,13 +114,13 @@ const ViewEntryPage = () => {
 					<h2 className="text-2xl font-semibold text-violet-300 mb-4">
 						Associated Goals:
 					</h2>
-					{goals.length === 0 ? (
+					{associatedGoals.length === 0 ? (
 						<p className="text-gray-500">
 							No goals associated with this entry.
 						</p>
 					) : (
 						<ul className="space-y-2">
-							{goals.map((goal) => (
+							{associatedGoals.map((goal) => (
 								<GlowCard key={goal.id} className="bg-deepDark rounded-md flex">
 									<div className="flex-grow">
 										<h3 className="text-white font-semibold">{goal.title}</h3>
