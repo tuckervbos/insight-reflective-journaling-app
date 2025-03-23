@@ -19,6 +19,10 @@ import CreateGoalPage from "./components/CreateGoalPage/CreateGoalPage";
 import GoalsPage from "./components/GoalsPage/GoalsPage";
 import ViewGoalPage from "./components/ViewGoalPage/ViewGoalPage";
 import EditGoalPage from "./components/EditGoalPage/EditGoalPage";
+import MilestonesPage from "./components/MilestonesPage/MilestonesPage";
+import EditMilestonePage from "./components/EditMilestonePage/EditMilestonePage";
+import CreateMilestonePage from "./components/CreateMilestonePage/CreateMilestonePage";
+import ViewMilestonePage from "./components/ViewMilestonePage/ViewMilestonePage";
 
 const App = () => {
 	const { user, authenticate } = useSessionStore();
@@ -61,6 +65,19 @@ const App = () => {
 								<Route path="/goals/new" element={<CreateGoalPage />} />
 								<Route path="/goals/:goalId" element={<ViewGoalPage />} />
 								<Route path="/goals/:goalId/edit" element={<EditGoalPage />} />
+								<Route path="/milestones" element={<MilestonesPage />} />
+								<Route
+									path="/milestones/new"
+									element={<CreateMilestonePage />}
+								/>
+								<Route
+									path="/milestones/:milestoneId"
+									element={<ViewMilestonePage />}
+								/>
+								<Route
+									path="/milestones/:milestoneId/edit"
+									element={<EditMilestonePage />}
+								/>
 							</>
 						)}
 					</Routes>

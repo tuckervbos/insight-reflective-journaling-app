@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models import Goal, db, GoalStatus, EntryGoal
 from flask_login import login_required, current_user
-from sqlalchemy.exc import ArgumentError  # Import to handle conversion errors
+from sqlalchemy.exc import ArgumentError
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 

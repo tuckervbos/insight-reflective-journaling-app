@@ -29,7 +29,7 @@ function HomePage() {
 		<DarkThemeProvider>
 			<div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-4 py-12">
 				<h1 className="text-5xl font-extralight text-violet-400 mb-6">
-					Welcome to Insight
+					welcome to insight
 				</h1>
 				<p className="text-gray-400 mb-6">
 					Reflect on your thoughts and track your progress.
@@ -48,9 +48,9 @@ function HomePage() {
 					</div>
 
 					{/* center buttons */}
-					<div className="col-span-2 flex flex-col items-center space-y-4 self-start p-2">
+					<div className="col-span-2 flex flex-col items-center space-y-4 self-start p-1 pt-2">
 						<GlowButton
-							className="px-2 py-2 text-xs w-full"
+							className="px-2 py-2 text-xs font-extralight w-full"
 							onClick={() => navigate("/profile")}
 						>
 							Profile
@@ -78,6 +78,18 @@ function HomePage() {
 							onClick={() => navigate("/goals")}
 						>
 							View Goals
+						</GlowButton>
+						<GlowButton
+							className="px-2 py-2 text-xs w-full"
+							onClick={() => navigate("/milestones/new")}
+						>
+							New Milestone
+						</GlowButton>
+						<GlowButton
+							className="px-2 py-2 text-xs w-full"
+							onClick={() => navigate("/milestones")}
+						>
+							View Milestones
 						</GlowButton>
 					</div>
 

@@ -174,7 +174,7 @@ export const fetchEntryById = async (id) => {
 		});
 		if (!response.ok) throw new Error("Failed to fetch entry.");
 		const entry = await response.json();
-		console.log("Fetched Entry:", entry); // ✅ Debugging output
+		console.log("Fetched Entry:", entry);
 		return entry;
 	} catch (error) {
 		console.error("Error fetching entry by ID:", error);
@@ -505,6 +505,113 @@ export const fetchEntriesForGoal = async (goalId) => {
 	}
 };
 
+// ------------------------------ milestones --------------------------------
+
+// Fetch all milestones
+export const fetchMilestones = async (status = null) => {
+	try {
+		if (!csrfToken) await getCsrfToken(); // Ensure CSRF token is set
+		const url = status ? `/api/milestones?status=${status}` : "/api/milestones";
+		const response = await fetch(url, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to fetch milestones.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching milestones:", error);
+		throw error;
+	}
+};
+
+// Fetch a specific milestone by ID
+export const fetchMilestoneById = async (id) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/milestones/${id}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to fetch milestone.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching milestone by ID:", error);
+		throw error;
+	}
+};
+
+// Create a new milestone
+export const createMilestone = async (milestoneData) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch("/api/milestones", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+			body: JSON.stringify(milestoneData),
+		});
+		if (!response.ok) {
+			const error = await response.json();
+			throw new Error(error.error || "Failed to create milestone.");
+		}
+		return await response.json();
+	} catch (error) {
+		console.error("Error creating milestone:", error);
+		throw error;
+	}
+};
+
+// Update an existing milestone
+export const updateMilestone = async (id, updatedData) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/milestones/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+			body: JSON.stringify(updatedData),
+		});
+		if (!response.ok) throw new Error("Failed to update milestone.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error updating milestone:", error);
+		throw error;
+	}
+};
+
+// Delete a milestone
+export const deleteMilestone = async (id) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/milestones/${id}`, {
+			method: "DELETE",
+			headers: {
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to delete milestone.");
+		return { success: true };
+	} catch (error) {
+		console.error("Error deleting milestone:", error);
+		throw error;
+	}
+};
+
 // Export all functions
 export default {
 	getCsrfToken,
@@ -529,4 +636,9 @@ export default {
 	deleteGoal,
 	fetchGoalsForEntry,
 	fetchEntriesForGoal,
+	fetchMilestones,
+	fetchMilestoneById,
+	createMilestone,
+	updateMilestone,
+	deleteMilestone,
 };
