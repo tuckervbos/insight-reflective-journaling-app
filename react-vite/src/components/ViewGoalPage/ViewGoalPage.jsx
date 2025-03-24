@@ -4,6 +4,7 @@ import useGoalsStore from "../../store/goalsStore";
 import { GlowButton } from "../UIComponents/Button";
 import { GlowCard } from "../UIComponents/Card";
 import { motion } from "framer-motion";
+import useMilestonesStore from "../../store/milestonesStore";
 
 const pageVariants = {
 	initial: { opacity: 0, y: 50 },
@@ -30,10 +31,10 @@ const ViewGoalPage = () => {
 		associatedEntries,
 		fetchGoals,
 	} = useGoalsStore();
-
 	const [goal, setGoal] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	const { fetchMilestones, milestones } = useMilestonesStore();
 
 	useEffect(() => {
 		const loadGoal = async () => {
@@ -43,6 +44,7 @@ const ViewGoalPage = () => {
 				if (fetchedGoal) {
 					setGoal(fetchedGoal);
 					await fetchEntriesForGoal(goalId);
+					await fetchMilestones();
 				} else {
 					setError("Goal not found.");
 				}
@@ -59,7 +61,7 @@ const ViewGoalPage = () => {
 			setError("Goal not found.");
 			setLoading(false);
 		}
-	}, [goalId, fetchGoalById, clearGoals, fetchEntriesForGoal]);
+	}, [goalId, fetchGoalById, clearGoals, fetchEntriesForGoal, fetchMilestones]);
 
 	if (loading) {
 		return <p className="text-center text-gray-400">Loading goal...</p>;
@@ -161,6 +163,45 @@ const ViewGoalPage = () => {
 											</GlowButton>
 										</li>
 									))}
+								</ul>
+							)}
+						</div>
+
+						{/* Associated Milestones Section */}
+						<div className="mt-8">
+							<h2 className="text-2xl font-semibold text-violet-300 mb-4">
+								Associated Milestones
+							</h2>
+							{milestones?.filter((m) => m.goal_id === parseInt(goalId))
+								.length === 0 ? (
+								<p className="text-gray-500">
+									No milestones associated with this goal.
+								</p>
+							) : (
+								<ul className="space-y-2">
+									{milestones
+										.filter((m) => m.goal_id === parseInt(goalId))
+										.map((milestone) => (
+											<li
+												key={milestone.id}
+												className="p-4 bg-deepDark border border-border rounded-md"
+											>
+												<h3 className="text-white font-semibold">
+													{milestone.milestone_name}
+												</h3>
+												<p className="text-gray-400">
+													{milestone.is_completed ? "Completed" : "Pending"}
+												</p>
+												<GlowButton
+													onClick={() =>
+														navigate(`/milestones/${milestone.id}`)
+													}
+													className="mt-2"
+												>
+													View Milestone
+												</GlowButton>
+											</li>
+										))}
 								</ul>
 							)}
 						</div>

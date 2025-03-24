@@ -4,6 +4,8 @@ import useGoalsStore from "../../store/goalsStore";
 import { GlowButton } from "../UIComponents/Button";
 import { GlowCard } from "../UIComponents/Card";
 import { motion } from "framer-motion";
+import { createMilestone } from "../../utils/api";
+import useMilestonesStore from "../../store/milestonesStore";
 
 const pageVariants = {
 	initial: { opacity: 0, y: 50 },
@@ -21,6 +23,7 @@ const EditGoalPage = () => {
 		fetchEntriesForGoal,
 		associatedEntries,
 	} = useGoalsStore();
+	const { fetchMilestones, milestones } = useMilestonesStore();
 
 	const [goal, setGoal] = useState(null);
 	const [title, setTitle] = useState("");
@@ -28,6 +31,7 @@ const EditGoalPage = () => {
 	const [status, setStatus] = useState("in_progress");
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	const [initialStatus, setInitialStatus] = useState(null);
 
 	useEffect(() => {
 		const loadGoal = async () => {
@@ -40,6 +44,7 @@ const EditGoalPage = () => {
 					setTitle(fetchedGoal.title);
 					setDescription(fetchedGoal.description);
 					setStatus(fetchedGoal.status);
+					setInitialStatus(fetchedGoal.status);
 					await fetchEntriesForGoal(goalId);
 				} else {
 					setError("Goal not found.");
@@ -62,30 +67,47 @@ const EditGoalPage = () => {
 	const handleUpdate = async (e) => {
 		e.preventDefault();
 
-		if (!title.trim()) {
-			alert("Title is required to update the goal.");
-			return;
-		}
+		if (!title.trim()) return alert("Title is required.");
+		if (!description.trim()) return alert("Description is required.");
 
-		if (!description.trim()) {
-			alert("Description is required to update the goal.");
-			return;
+		const statusChangedToCompleted =
+			initialStatus !== "completed" && status === "completed";
+
+		let userConfirmed = false;
+		if (statusChangedToCompleted) {
+			userConfirmed = window.confirm(
+				"This goal is now marked as completed. Would you like to create a milestone from it?"
+			);
 		}
 
 		try {
-			await updateGoal(goalId, {
-				title,
-				description,
-				status,
-			});
-			if (associatedEntries.length > 0) {
-				const entryId = associatedEntries[0].id; // Assuming we navigate to the first associated entry
+			await updateGoal(goalId, { title, description, status });
 
-				navigate(`/entries/${entryId}`);
-			} else {
-				navigate(`/goals/${goalId}`);
+			// 🔁 Wait for server-side goal update to reflect
+			let updatedGoal = null;
+			let retries = 5;
+			while (retries--) {
+				await new Promise((res) => setTimeout(res, 300));
+				updatedGoal = await fetchGoalById(goalId);
+				if (updatedGoal?.status === "completed") break;
 			}
+
+			if (userConfirmed && updatedGoal?.status === "completed") {
+				try {
+					await createMilestone({
+						milestone_name: title,
+						goal_id: parseInt(goalId),
+						is_completed: true,
+					});
+				} catch (milestoneError) {
+					console.error("Failed to create milestone:", milestoneError);
+					alert("Goal updated, but failed to create milestone.");
+				}
+			}
+
+			navigate(`/goals/${goalId}`);
 		} catch (err) {
+			console.error("❌ Error updating goal or creating milestone:", err);
 			setError("Failed to update goal.");
 		}
 	};
@@ -189,6 +211,37 @@ const EditGoalPage = () => {
 										</GlowButton>
 									</li>
 								))}
+							</ul>
+						)}
+					</div>
+
+					{/* Associated Milestones Section */}
+					<div className="mt-8">
+						<h2 className="text-2xl font-semibold text-violet-300 mb-4">
+							Associated Milestones
+						</h2>
+						{milestones?.filter((m) => m.goal_id === parseInt(goalId))
+							.length === 0 ? (
+							<p className="text-gray-500">
+								No milestones associated with this goal.
+							</p>
+						) : (
+							<ul className="space-y-2">
+								{milestones
+									.filter((m) => m.goal_id === parseInt(goalId))
+									.map((milestone) => (
+										<li
+											key={milestone.id}
+											className="p-4 bg-deepDark border border-border rounded-md"
+										>
+											<h3 className="text-white font-semibold">
+												{milestone.milestone_name}
+											</h3>
+											<p className="text-gray-400">
+												{milestone.is_completed ? "Completed" : "Pending"}
+											</p>
+										</li>
+									))}
 							</ul>
 						)}
 					</div>

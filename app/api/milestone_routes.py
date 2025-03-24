@@ -33,6 +33,9 @@ def get_milestone(id):
 @login_required
 def create_milestone():
     """Create a milestone, ensuring goal exists & preventing duplicate names."""
+    print("📌 [milestone_routes] create_milestone endpoint called")
+    print("Request JSON:", request.json)
+
     data = request.json
     milestone_name = data.get("milestone_name", "").strip()
     if not milestone_name:
@@ -48,18 +51,19 @@ def create_milestone():
     if existing_milestone:
             return jsonify({"error": "Milestone with this name already exists."}), 400
 
-    if goal_id:
+    is_completed = data.get("is_completed")
+
+    if is_completed is None and goal_id:
         goal = Goal.query.get(goal_id)
         if not goal:
             return jsonify({"error": "Goal not found."}), 404
-        if goal.status != "completed":
-            return jsonify({"error": "Goal must be completed to create a milestone."}), 400
+        is_completed = goal.status == "completed"
 
     milestone = Milestone(
         user_id=current_user.id,
         milestone_name=milestone_name,
-        is_completed=False,
-        goal_id=goal_id, # can be None for standalone milestones
+        is_completed=is_completed,
+        goal_id=goal_id,
         created_at=datetime.utcnow()
     )
     
