@@ -7,6 +7,8 @@ import { GlowButton, GlowCard, DarkThemeProvider } from "../UIComponents";
 import JournalCalendar from "../Calendar/JournalCalendar";
 import GoalsOverview from "../GoalsOverview/GoalsOverview";
 import EntriesOverview from "../EntriesOverview/EntriesOverview";
+import AIInteractionForm from "../AIInteractionForm/AIInteractionForm";
+import AIInteractionList from "../AIInteractionList/AIInteractionList";
 
 function HomePage() {
 	const user = useSessionStore((state) => state.user);
@@ -41,6 +43,9 @@ function HomePage() {
 					<div className="col-span-5">
 						<GlowCard className=" w-full">
 							<JournalCalendar />
+						</GlowCard>
+						<GlowCard className="p-4">
+							<WeatherFetcher />
 						</GlowCard>
 						<GlowCard className="w-full mt-4 ">
 							<GoalsOverview />
@@ -95,9 +100,23 @@ function HomePage() {
 
 					{/* right: Weather + Recent Entries (Stacked, Smaller than before) */}
 					<div className="col-span-5 flex flex-col space-y-5">
-						<GlowCard className="p-4">
-							<WeatherFetcher />
+						{/* AI Assistant Section */}
+						<GlowCard>
+							<div className="bg-black text-white p-4 rounded-lg border border-violet-500 shadow-lg shadow-violet-500/50">
+								<h2 className="text-xl font-light text-violet-400 mb-2">
+									AI Assistant
+								</h2>
+								<div className="flex flex-col space-y-4">
+									<GlowCard>
+										<AIInteractionForm />
+									</GlowCard>
+									<GlowCard>
+										<AIInteractionList />
+									</GlowCard>
+								</div>
+							</div>
 						</GlowCard>
+
 						<GlowCard className="p-4">
 							<EntriesOverview />
 						</GlowCard>

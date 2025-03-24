@@ -612,6 +612,107 @@ export const deleteMilestone = async (id) => {
 	}
 };
 
+// ------------------------------ AI Interactions --------------------------------
+
+export const fetchAIInteractions = async () => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch("/api/ai/", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to fetch AI interactions.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching AI interactions:", error);
+		throw error;
+	}
+};
+
+export const fetchAIInteractionById = async (id) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/ai/${id}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to fetch AI interaction.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching AI interaction by ID:", error);
+		throw error;
+	}
+};
+
+export const createAIInteraction = async (data) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch("/api/ai/", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+			body: JSON.stringify(data),
+		});
+		if (!response.ok) {
+			const error = await response.json();
+			throw new Error(error.error || "Failed to create AI interaction.");
+		}
+		return await response.json();
+	} catch (error) {
+		console.error("Error creating AI interaction:", error);
+		throw error;
+	}
+};
+
+export const updateAIInteraction = async (id, updatedData) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/ai/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+			body: JSON.stringify(updatedData),
+		});
+		if (!response.ok) throw new Error("Failed to update AI interaction.");
+		return await response.json();
+	} catch (error) {
+		console.error("Error updating AI interaction:", error);
+		throw error;
+	}
+};
+
+export const deleteAIInteraction = async (id) => {
+	try {
+		if (!csrfToken) await getCsrfToken();
+		const response = await fetch(`/api/ai/${id}`, {
+			method: "DELETE",
+			headers: {
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			credentials: "include",
+		});
+		if (!response.ok) throw new Error("Failed to delete AI interaction.");
+		return { success: true };
+	} catch (error) {
+		console.error("Error deleting AI interaction:", error);
+		throw error;
+	}
+};
+
 // Export all functions
 export default {
 	getCsrfToken,
@@ -641,4 +742,9 @@ export default {
 	createMilestone,
 	updateMilestone,
 	deleteMilestone,
+	fetchAIInteractions,
+	fetchAIInteractionById,
+	createAIInteraction,
+	updateAIInteraction,
+	deleteAIInteraction,
 };

@@ -23,6 +23,8 @@ import MilestonesPage from "./components/MilestonesPage/MilestonesPage";
 import EditMilestonePage from "./components/EditMilestonePage/EditMilestonePage";
 import CreateMilestonePage from "./components/CreateMilestonePage/CreateMilestonePage";
 import ViewMilestonePage from "./components/ViewMilestonePage/ViewMilestonePage";
+import AIInteractionForm from "./components/AIInteractionForm/AIInteractionForm";
+import AIInteractionList from "./components/AIInteractionList/AIInteractionList";
 
 const App = () => {
 	const { user, authenticate } = useSessionStore();
@@ -77,6 +79,14 @@ const App = () => {
 								<Route
 									path="/milestones/:milestoneId/edit"
 									element={<EditMilestonePage />}
+								/>
+								<Route
+									path="/ai/interactions-form"
+									element={<AIInteractionForm />}
+								/>
+								<Route
+									path="/ai/interactions-list"
+									element={<AIInteractionList />}
 								/>
 							</>
 						)}
