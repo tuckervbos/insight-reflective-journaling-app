@@ -43,9 +43,9 @@ export default function InsightForm({ entryId = null }) {
 						whileHover={{ scale: 1.02 }}
 						whileTap={{ scale: 0.98 }}
 						disabled={loading}
-						className="w-full h-full rounded border-2 border-violet-500 text-violet-300 text-2xl font-extralight z-10 relative overflow-hidden"
+						className="w-full h-full rounded border-2 border-violet-700 text-violet-50 text-lg font-extralight z-10 relative overflow-hidden"
 					>
-						<span className="relative z-20">
+						<span className="relative z-20 pointer-events-none select-none">
 							{loading ? "Thinking..." : "Ask Insight"}
 						</span>
 						<div className="absolute inset-0 z-0">

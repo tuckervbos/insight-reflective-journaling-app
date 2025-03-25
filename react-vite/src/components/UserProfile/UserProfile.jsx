@@ -46,7 +46,7 @@ const UserProfile = () => {
 	};
 
 	return (
-		<div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-8 py-12">
+		<div className="min-h-screen flex flex-col items-center bg-black text-white px-8 py-12">
 			<h1 className="text-5xl font-extralight text-violet-400 mb-6">
 				User Profile
 			</h1>

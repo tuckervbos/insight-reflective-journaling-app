@@ -62,7 +62,8 @@ function HomePage() {
 					trends, and provide feedback and support.
 				</p>
 				<p className="text-gray-400 mb-6">
-					Ask the assistant anything! Responses can be saved in a new entry.
+					Ask the assistant anything! Responses will be saved for later
+					reference.
 				</p>
 
 				{/* Main Layout Grid */}

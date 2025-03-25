@@ -1,15 +1,34 @@
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useRef, useEffect } from "react";
 
 export default function GradientCursorEffect() {
 	const ref = useRef(null);
 	const gradientX = useMotionValue(0.5);
 	const gradientY = useMotionValue(0.5);
+	const hue = useMotionValue(0);
+
+	useEffect(() => {
+		const controls = animate(hue, [0, 360], {
+			duration: 20,
+			repeat: Infinity,
+			repeatType: "loop",
+			ease: "linear",
+		});
+		return () => controls.stop();
+	}, [hue]);
 
 	const background = useTransform(() => {
 		const x = gradientX.get() * 100;
 		const y = gradientY.get() * 100;
-		return `conic-gradient(from 0deg at ${x}% ${y}%, #0cdcf7, #ff0088, #fff312, #0cdcf7)`;
+		const h = hue.get();
+
+		return `conic-gradient(
+            from 0deg at ${x}% ${y}%,
+            hsl(${h}, 100%, 45%),
+            hsl(${(h + 120) % 360}, 100%, 45%),
+            hsl(${(h + 240) % 360}, 100%, 45%),
+            hsl(${h}, 100%, 45%)
+        )`;
 	});
 
 	const handlePointerMove = (e) => {
@@ -25,9 +44,7 @@ export default function GradientCursorEffect() {
 		const node = ref.current;
 		if (!node) return;
 		node.addEventListener("pointermove", handlePointerMove);
-		return () => {
-			node.removeEventListener("pointermove", handlePointerMove);
-		};
+		return () => node.removeEventListener("pointermove", handlePointerMove);
 	}, []);
 
 	return (
@@ -36,10 +53,11 @@ export default function GradientCursorEffect() {
 			style={{
 				width: "100%",
 				height: "100%",
-				borderRadius: "inherit",
 				position: "absolute",
 				inset: 0,
-				overflow: "hidden",
+				borderRadius: "inherit",
+				overflow: "hidden", // Keep it from leaking
+				// pointerEvents: "none",
 			}}
 		>
 			<motion.div
@@ -48,6 +66,9 @@ export default function GradientCursorEffect() {
 					position: "absolute",
 					inset: 0,
 					borderRadius: "inherit",
+					filter: "blur(4px)",
+					opacity: 0.9,
+					// pointerEvents: "none",
 				}}
 			/>
 		</div>
