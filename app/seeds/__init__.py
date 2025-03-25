@@ -6,6 +6,7 @@ from .entries import seed_entries, undo_entries
 from .milestones import seed_milestones, undo_milestones
 from .entry_goals import seed_entry_goals, undo_entry_goals
 from .entry_tags import seed_entry_tags, undo_entry_tags
+from .insights import seed_insights, undo_insights
 
 from app.models.db import db, environment, SCHEMA
 
@@ -29,6 +30,7 @@ def seed():
         undo_entry_goals()
         undo_entry_tags()
         undo_milestones()
+        undo_insights()
     seed_users()
     seed_goals()
     seed_tags()
@@ -36,6 +38,7 @@ def seed():
     seed_entry_goals()
     seed_entry_tags()
     seed_milestones()
+    seed_insights()
 
 
 # Creates the `flask seed undo` command
@@ -48,4 +51,5 @@ def undo():
     undo_entry_goals()
     undo_entry_tags()
     undo_milestones()
+    undo_insights()
     # Add other undo functions here
