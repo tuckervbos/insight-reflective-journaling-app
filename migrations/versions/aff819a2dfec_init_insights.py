@@ -18,6 +18,9 @@ depends_on = None
 schema_arg = {'schema': SCHEMA} if environment == "production" else {}
 
 def upgrade():
+    if environment == "production":
+        op.execute(f"CREATE SCHEMA IF NOT EXISTS {SCHEMA}")
+
     op.create_table('tags',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('name', sa.String(length=255), nullable=False),
