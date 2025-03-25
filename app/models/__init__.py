@@ -6,7 +6,7 @@ from .tag import Tag
 from .milestone import Milestone
 from .entry_tag import EntryTag
 from .entry_goal import EntryGoal
-from .ai_interaction import AIInteraction
+from .insight import Insight
 
 # __all__ = [
 #     "db",

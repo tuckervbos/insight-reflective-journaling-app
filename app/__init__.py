@@ -11,7 +11,7 @@ from .api.entry_routes import entry_routes
 from .api.goal_routes import goal_routes
 from .api.tag_routes import tag_routes 
 from .api.milestone_routes import milestone_routes
-from .api.ai_routes import ai_routes  
+from .api.insight_routes import insight_routes
 from .seeds import seed_commands
 from .config import Config
 
@@ -38,7 +38,7 @@ app.register_blueprint(entry_routes, url_prefix="/api/entries")
 app.register_blueprint(goal_routes, url_prefix="/api/goals")
 app.register_blueprint(tag_routes, url_prefix="/api/tags")
 app.register_blueprint(milestone_routes, url_prefix="/api/milestones")
-app.register_blueprint(ai_routes, url_prefix='/api/ai')
+app.register_blueprint(insight_routes, url_prefix="/api/insights")
 
 # Initialize Database and Migrations
 db.init_app(app)

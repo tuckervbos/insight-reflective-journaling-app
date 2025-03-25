@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createEntry, updateEntry } from "../../utils/api";
 import WeatherFetcher from "../WeatherFetcher/WeatherFetcher";
-import { GlowButton } from "../UIComponents";
+import { GlowButton, GlowCard } from "../UIComponents";
 import GoalSetter from "../GoalSetter/GoalSetter";
 import useGoalsStore from "../../store/goalsStore";
+import InsightForm from "../InsightForm/InsightForm";
+// import InsightList from "../InsightList/InsightList";
 
 const CreateEntryPage = () => {
 	const [title, setTitle] = useState("");
@@ -101,6 +103,19 @@ const CreateEntryPage = () => {
 						setMoonPhase(moonPhaseData || "Unknown");
 					}}
 				/>
+
+				{/* AI Insight Assistant */}
+
+				<div className="mt-8">
+					{/* <GlowCard> */}
+					<InsightForm entryId={entryId} />
+					{/* </GlowCard> */}
+					{/* <div className="mt-6">
+						<GlowCard>
+							<InsightList />
+						</GlowCard>
+					</div> */}
+				</div>
 
 				<textarea
 					placeholder="Write your journal entry here...(at least 10 characters)"

@@ -1,8 +1,8 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from datetime import datetime
 
-class AIInteraction(db.Model):
-    __tablename__ = "ai_interactions"
+class Insight(db.Model):
+    __tablename__ = "insights"
 
     if environment == "production":
         __table_args__ = {'schema': SCHEMA}
@@ -13,9 +13,8 @@ class AIInteraction(db.Model):
     response = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # Optional association with an entry
     entry_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("entries.id")), nullable=True)
-    entry = db.relationship("Entry", backref="ai_interactions")
+    entry = db.relationship("Entry", backref="insights")
 
     def to_dict(self):
         return {

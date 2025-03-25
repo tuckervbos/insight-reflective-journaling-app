@@ -612,12 +612,12 @@ export const deleteMilestone = async (id) => {
 	}
 };
 
-// ------------------------------ AI Interactions --------------------------------
+// ------------------------------ AI Insights --------------------------------
 
-export const fetchAIInteractions = async () => {
+export const fetchInsights = async () => {
 	try {
 		if (!csrfToken) await getCsrfToken();
-		const response = await fetch("/api/ai/", {
+		const response = await fetch("/api/insights", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -625,18 +625,18 @@ export const fetchAIInteractions = async () => {
 			},
 			credentials: "include",
 		});
-		if (!response.ok) throw new Error("Failed to fetch AI interactions.");
+		if (!response.ok) throw new Error("Failed to fetch insights.");
 		return await response.json();
 	} catch (error) {
-		console.error("Error fetching AI interactions:", error);
+		console.error("Error fetching insights:", error);
 		throw error;
 	}
 };
 
-export const fetchAIInteractionById = async (id) => {
+export const fetchInsightById = async (id) => {
 	try {
 		if (!csrfToken) await getCsrfToken();
-		const response = await fetch(`/api/ai/${id}`, {
+		const response = await fetch(`/api/insights/${id}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -644,18 +644,18 @@ export const fetchAIInteractionById = async (id) => {
 			},
 			credentials: "include",
 		});
-		if (!response.ok) throw new Error("Failed to fetch AI interaction.");
+		if (!response.ok) throw new Error("Failed to fetch insight.");
 		return await response.json();
 	} catch (error) {
-		console.error("Error fetching AI interaction by ID:", error);
+		console.error("Error fetching insight by ID:", error);
 		throw error;
 	}
 };
 
-export const createAIInteraction = async (data) => {
+export const createInsight = async (data) => {
 	try {
 		if (!csrfToken) await getCsrfToken();
-		const response = await fetch("/api/ai/", {
+		const response = await fetch("/api/insights", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -666,19 +666,19 @@ export const createAIInteraction = async (data) => {
 		});
 		if (!response.ok) {
 			const error = await response.json();
-			throw new Error(error.error || "Failed to create AI interaction.");
+			throw new Error(error.error || "Failed to create insight.");
 		}
 		return await response.json();
 	} catch (error) {
-		console.error("Error creating AI interaction:", error);
+		console.error("Error creating insight:", error);
 		throw error;
 	}
 };
 
-export const updateAIInteraction = async (id, updatedData) => {
+export const updateInsight = async (id, updatedData) => {
 	try {
 		if (!csrfToken) await getCsrfToken();
-		const response = await fetch(`/api/ai/${id}`, {
+		const response = await fetch(`/api/insights/${id}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
@@ -687,28 +687,28 @@ export const updateAIInteraction = async (id, updatedData) => {
 			credentials: "include",
 			body: JSON.stringify(updatedData),
 		});
-		if (!response.ok) throw new Error("Failed to update AI interaction.");
+		if (!response.ok) throw new Error("Failed to update insight.");
 		return await response.json();
 	} catch (error) {
-		console.error("Error updating AI interaction:", error);
+		console.error("Error updating insight:", error);
 		throw error;
 	}
 };
 
-export const deleteAIInteraction = async (id) => {
+export const deleteInsight = async (id) => {
 	try {
 		if (!csrfToken) await getCsrfToken();
-		const response = await fetch(`/api/ai/${id}`, {
+		const response = await fetch(`/api/insights/${id}`, {
 			method: "DELETE",
 			headers: {
 				"X-CSRF-TOKEN": csrfToken,
 			},
 			credentials: "include",
 		});
-		if (!response.ok) throw new Error("Failed to delete AI interaction.");
+		if (!response.ok) throw new Error("Failed to delete insight.");
 		return { success: true };
 	} catch (error) {
-		console.error("Error deleting AI interaction:", error);
+		console.error("Error deleting insight:", error);
 		throw error;
 	}
 };
@@ -742,9 +742,9 @@ export default {
 	createMilestone,
 	updateMilestone,
 	deleteMilestone,
-	fetchAIInteractions,
-	fetchAIInteractionById,
-	createAIInteraction,
-	updateAIInteraction,
-	deleteAIInteraction,
+	fetchInsights,
+	fetchInsightById,
+	createInsight,
+	updateInsight,
+	deleteInsight,
 };

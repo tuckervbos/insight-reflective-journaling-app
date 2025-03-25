@@ -23,8 +23,12 @@ import MilestonesPage from "./components/MilestonesPage/MilestonesPage";
 import EditMilestonePage from "./components/EditMilestonePage/EditMilestonePage";
 import CreateMilestonePage from "./components/CreateMilestonePage/CreateMilestonePage";
 import ViewMilestonePage from "./components/ViewMilestonePage/ViewMilestonePage";
-import AIInteractionForm from "./components/AIInteractionForm/AIInteractionForm";
-import AIInteractionList from "./components/AIInteractionList/AIInteractionList";
+import InsightForm from "./components/InsightForm/InsightForm";
+import InsightList from "./components/InsightList/InsightList";
+import ViewInsightsPage from "./components/ViewInsightsPage/ViewInsightsPage";
+import ViewInsightPage from "./components/ViewInsightPage/ViewInsightPage";
+import CreateInsightPage from "./components/CreateInsightPage/CreateInsightPage";
+import EditInsightPage from "./components/EditInsightPage/EditInsightPage";
 
 const App = () => {
 	const { user, authenticate } = useSessionStore();
@@ -80,14 +84,18 @@ const App = () => {
 									path="/milestones/:milestoneId/edit"
 									element={<EditMilestonePage />}
 								/>
+								<Route path="/insights" element={<ViewInsightsPage />} />
+								<Route path="/insights/new" element={<CreateInsightPage />} />
 								<Route
-									path="/ai/interactions-form"
-									element={<AIInteractionForm />}
+									path="/insights/:insightId"
+									element={<ViewInsightPage />}
 								/>
 								<Route
-									path="/ai/interactions-list"
-									element={<AIInteractionList />}
+									path="/insights/:insightId/edit"
+									element={<EditInsightPage />}
 								/>
+								{/* <Route path="/ai/insight-form" element={<InsightForm />} /> */}
+								{/* <Route path="/ai/insight-list" element={<InsightList />} /> */}
 							</>
 						)}
 					</Routes>

@@ -7,13 +7,15 @@ import { GlowButton, GlowCard, DarkThemeProvider } from "../UIComponents";
 import JournalCalendar from "../Calendar/JournalCalendar";
 import GoalsOverview from "../GoalsOverview/GoalsOverview";
 import EntriesOverview from "../EntriesOverview/EntriesOverview";
-import AIInteractionForm from "../AIInteractionForm/AIInteractionForm";
-import AIInteractionList from "../AIInteractionList/AIInteractionList";
+import InsightForm from "../InsightForm/InsightForm";
+import InsightList from "../InsightList/InsightList";
+import useInsightStore from "../../store/insightStore";
 
 function HomePage() {
 	const user = useSessionStore((state) => state.user);
 	const authenticate = useSessionStore((state) => state.authenticate);
 	const { fetchEntries } = useEntriesStore();
+	const { loadInsights, insights } = useInsightStore();
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -26,6 +28,15 @@ function HomePage() {
 			navigate("/");
 		}
 	}, [user, navigate]);
+
+	// useEffect(() => {
+	// 	const { insights, loadInsights } = useInsightStore.getState();
+	// 	if (insights.length === 0) loadInsights();
+	// }, []);
+
+	useEffect(() => {
+		if (!insights.length) loadInsights();
+	}, [insights.length, loadInsights]);
 
 	return (
 		<DarkThemeProvider>
@@ -59,6 +70,12 @@ function HomePage() {
 							onClick={() => navigate("/profile")}
 						>
 							Profile
+						</GlowButton>
+						<GlowButton
+							className="px-2 py-2 text-xs w-full"
+							onClick={() => navigate("/insights")}
+						>
+							View Insights
 						</GlowButton>
 						<GlowButton
 							className="px-2 py-2 text-xs w-full"
@@ -102,17 +119,14 @@ function HomePage() {
 					<div className="col-span-5 flex flex-col space-y-5">
 						{/* AI Assistant Section */}
 						<GlowCard>
-							<div className="bg-black text-white p-4 rounded-lg border border-violet-500 shadow-lg shadow-violet-500/50">
-								<h2 className="text-xl font-light text-violet-400 mb-2">
+							<div className="">
+								{/* <h2 className="text-xl text-center font-light text-violet-400 mb-2">
 									AI Assistant
-								</h2>
+								</h2> */}
 								<div className="flex flex-col space-y-4">
-									<GlowCard>
-										<AIInteractionForm />
-									</GlowCard>
-									<GlowCard>
-										<AIInteractionList />
-									</GlowCard>
+									<InsightForm />
+
+									<InsightList limit={2} showViewButton />
 								</div>
 							</div>
 						</GlowCard>
