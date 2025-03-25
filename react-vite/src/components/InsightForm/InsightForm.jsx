@@ -1,5 +1,7 @@
 import { useState } from "react";
 import useInsightStore from "../../store/insightStore";
+import { motion } from "framer-motion";
+import GradientCursorEffect from "../UIComponents/GradientCursorEffect";
 
 export default function InsightForm({ entryId = null }) {
 	const { createInsight, loading, error } = useInsightStore();
@@ -11,22 +13,15 @@ export default function InsightForm({ entryId = null }) {
 
 		const insight = await createInsight({ prompt, entry_id: entryId });
 
-		if (insight?.response) {
-			setResponse(insight.response);
-		}
+		if (insight?.response) setResponse(insight.response);
 
-		// Avoid saving if being used purely for appending in EditInsightPage
 		if (!entryId && window.location.pathname.includes("/edit")) {
 			console.log("Skipping save for edit insight page append.");
 			return;
 		}
 
-		if (insight) {
-			// setResponse(insight.response || "");
-			setPrompt("");
-		} else {
-			console.warn("Insight creation was skipped or failed.");
-		}
+		if (insight) setPrompt("");
+		else console.warn("Insight creation was skipped or failed.");
 	};
 
 	return (
@@ -36,19 +31,28 @@ export default function InsightForm({ entryId = null }) {
 			</h3>
 			<form onSubmit={handleSubmit} className="space-y-2">
 				<textarea
-					placeholder="Ask the assistant..."
+					placeholder="Ask me anything... What's on your mind?"
 					value={prompt}
 					onChange={(e) => setPrompt(e.target.value)}
 					className="w-full p-2 rounded bg-background text-white border border-violet-500"
 					required
 				/>
-				<button
-					type="submit"
-					disabled={loading}
-					className="px-4 py-2 bg-violet-600 rounded hover:bg-violet-700 disabled:opacity-50"
-				>
-					{loading ? "Thinking..." : "Ask"}
-				</button>
+				<div className="relative w-full h-12 group">
+					<motion.button
+						type="submit"
+						whileHover={{ scale: 1.02 }}
+						whileTap={{ scale: 0.98 }}
+						disabled={loading}
+						className="w-full h-full rounded border-2 border-violet-500 text-violet-300 text-2xl font-extralight z-10 relative overflow-hidden"
+					>
+						<span className="relative z-20">
+							{loading ? "Thinking..." : "Ask Insight"}
+						</span>
+						<div className="absolute inset-0 z-0">
+							<GradientCursorEffect />
+						</div>
+					</motion.button>
+				</div>
 			</form>
 
 			{error && <p className="text-red-500">{error}</p>}

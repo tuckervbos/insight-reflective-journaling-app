@@ -76,3 +76,35 @@ def delete_insight(id):
     db.session.delete(insight)
     db.session.commit()
     return jsonify({"message": "Deleted"}), 200
+
+@insight_routes.route("/analyze", methods=["POST"])
+@login_required
+def analyze_user_data():
+    data = request.get_json()
+    entries = data.get("entries", [])
+    goals = data.get("goals", [])
+    milestones = data.get("milestones", [])
+
+    prompt = (
+    "You are a supportive journaling assistant. The user has granted permission "
+    "to analyze their private data to provide encouragement, identify themes, and give helpful feedback. "
+    "Speak directly to the user. Be warm, kind, and constructive.\n\n"
+    f"User Entries: {entries}\n\nUser Goals: {goals}\n\nUser Milestones: {milestones}"
+    )
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        ai_reply = response.choices[0].message.content
+        new_insight = Insight(
+            user_id=current_user.id,
+            prompt="Analyze user data for trends and support",
+            response=ai_reply,
+        )
+        db.session.add(new_insight)
+        db.session.commit()
+        return jsonify(new_insight.to_dict()), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

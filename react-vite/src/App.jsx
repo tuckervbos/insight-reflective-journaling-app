@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 import LandingPage from "./components/LandingPage/LandingPage";
 import SignupFormPage from "./components/SignupFormPage/SignupFormPage";
 import LoginFormPage from "./components/LoginFormPage/LoginFormPage";
@@ -40,6 +41,7 @@ const App = () => {
 
 	return (
 		<>
+			<Toaster />
 			<Navigation />
 
 			<div className="app-content min-h-screen bg-black text-white">

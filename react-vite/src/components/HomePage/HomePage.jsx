@@ -1,15 +1,20 @@
 import useSessionStore from "../../store/sessionStore";
 import useEntriesStore from "../../store/entriesStore";
-import { useEffect } from "react";
+import useInsightStore from "../../store/insightStore";
+import useMilestonesStore from "../../store/milestonesStore";
+import useGoalsStore from "../../store/goalsStore";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import WeatherFetcher from "../WeatherFetcher/WeatherFetcher";
+import { motion } from "framer-motion";
 import { GlowButton, GlowCard, DarkThemeProvider } from "../UIComponents";
+import WeatherFetcher from "../WeatherFetcher/WeatherFetcher";
 import JournalCalendar from "../Calendar/JournalCalendar";
 import GoalsOverview from "../GoalsOverview/GoalsOverview";
 import EntriesOverview from "../EntriesOverview/EntriesOverview";
 import InsightForm from "../InsightForm/InsightForm";
 import InsightList from "../InsightList/InsightList";
-import useInsightStore from "../../store/insightStore";
+import GradientCursorEffect from "../UIComponents/GradientCursorEffect";
+import GlobalInsightButton from "./GlobalInsightButton";
 
 function HomePage() {
 	const user = useSessionStore((state) => state.user);
@@ -40,12 +45,24 @@ function HomePage() {
 
 	return (
 		<DarkThemeProvider>
-			<div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-4 py-12">
+			<div className="min-h-screen flex flex-col items-left justify-center bg-black text-white px-4 py-12">
 				<h1 className="text-5xl font-extralight text-violet-400 mb-6">
-					welcome to insight
+					Welcome to Insight
 				</h1>
+				<p className="text-gray-400 mb-2">Breathe and relax.</p>
+				<p className="text-gray-400 mb-2">
+					Reflect on your thoughts and track your progress in a new entry.
+				</p>
+				<p className="text-gray-400 mb-2">
+					Set your sights on a new goal, or celebrate an achievement with a new
+					milestone!
+				</p>
+				<p className="text-gray-400 mb-2">
+					Tap the New Insight button to allow ChatGPT to view your data, analyze
+					trends, and provide feedback and support.
+				</p>
 				<p className="text-gray-400 mb-6">
-					Reflect on your thoughts and track your progress.
+					Ask the assistant anything! Responses can be saved in a new entry.
 				</p>
 
 				{/* Main Layout Grid */}
@@ -65,29 +82,12 @@ function HomePage() {
 
 					{/* center buttons */}
 					<div className="col-span-2 flex flex-col items-center space-y-4 self-start p-1 pt-2">
-						<GlowButton
-							className="px-2 py-2 text-xs font-extralight w-full"
-							onClick={() => navigate("/profile")}
-						>
-							Profile
-						</GlowButton>
-						<GlowButton
-							className="px-2 py-2 text-xs w-full"
-							onClick={() => navigate("/insights")}
-						>
-							View Insights
-						</GlowButton>
+						<GlobalInsightButton />
 						<GlowButton
 							className="px-2 py-2 text-xs w-full"
 							onClick={() => navigate("/entries/new")}
 						>
 							New Entry
-						</GlowButton>
-						<GlowButton
-							className="px-2 py-3 text-xs w-full"
-							onClick={() => navigate("/entries")}
-						>
-							View Entries
 						</GlowButton>
 						<GlowButton
 							className="px-2 py-2 text-xs w-full"
@@ -97,21 +97,39 @@ function HomePage() {
 						</GlowButton>
 						<GlowButton
 							className="px-2 py-2 text-xs w-full"
-							onClick={() => navigate("/goals")}
-						>
-							View Goals
-						</GlowButton>
-						<GlowButton
-							className="px-2 py-2 text-xs w-full"
 							onClick={() => navigate("/milestones/new")}
 						>
 							New Milestone
 						</GlowButton>
 						<GlowButton
 							className="px-2 py-2 text-xs w-full"
+							onClick={() => navigate("/insights")}
+						>
+							View Insights
+						</GlowButton>
+						<GlowButton
+							className="px-2 py-3 text-xs w-full"
+							onClick={() => navigate("/entries")}
+						>
+							View Entries
+						</GlowButton>
+						<GlowButton
+							className="px-2 py-2 text-xs w-full"
+							onClick={() => navigate("/goals")}
+						>
+							View Goals
+						</GlowButton>
+						<GlowButton
+							className="px-2 py-2 text-xs w-full"
 							onClick={() => navigate("/milestones")}
 						>
 							View Milestones
+						</GlowButton>
+						<GlowButton
+							className="px-2 py-2 text-xs font-extralight w-full"
+							onClick={() => navigate("/profile")}
+						>
+							Profile
 						</GlowButton>
 					</div>
 
